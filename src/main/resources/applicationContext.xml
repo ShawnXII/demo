@@ -89,7 +89,7 @@
 	<!--end mybaits 集成配置 -->
 
 	<!-- 注解的配置 -->
-	<context:component-scan base-package="com.qtz.order.*">
+	<context:component-scan base-package="com.qtz.ppsh.order.service.*">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	<!-- start 日志aop 拦截器 -->
@@ -123,19 +123,19 @@
   </tx:advice>
 	
 	<aop:config>
-		<aop:pointcut id="pc" expression="execution(* com.qtz.order..service.impl..*.*(..))"/>
+		<aop:pointcut id="pc" expression="execution(* com.qtz.ppsh.order..service.impl..*.*(..))"/>
  		<aop:advisor pointcut-ref="pc" advice-ref="txAdvice" order="101"/>
 		<!-- service日志通知 -->
 		<aop:aspect id="loggerServiceAspect" ref="loggerService" order="100">
-			<aop:around method="record" pointcut="execution(* com.qtz.order..service.impl..*.*(..))" />
+			<aop:around method="record" pointcut="execution(* com.qtz.ppsh.order..service.impl..*.*(..))" />
 		</aop:aspect>
 		<!-- dao日志通知 -->
 		<aop:aspect id="loggerDaoAspect" ref="loggerDao" order="101">
-			<aop:around method="record" pointcut="execution( * com.qtz.order.*.dao.impl..*.*(..))" />
+			<aop:around method="record" pointcut="execution( * com.qtz.ppsh.order.*.dao.impl..*.*(..))" />
 		</aop:aspect>
 		<!-- 方法调用时间通知 -->
 		<aop:aspect id="methodAspect" ref="methodTimeAop" order="102">
-			<aop:around method="around" pointcut="execution( * com.qtz.order.*.*.impl..*.*(..))" />
+			<aop:around method="around" pointcut="execution( * com.qtz.ppsh.order.*.*.impl..*.*(..))" />
 		</aop:aspect>
 	</aop:config>
 	<!-- 引入dubbo文件 -->
