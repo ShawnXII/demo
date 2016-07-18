@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qtz.order.service.dao.OrderDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+
+<!-- Result Map com.qtz.dm.order.vo.Order-->
+
+<resultMap id="BaseResultMap" type="com.qtz.order.service.vo.Order" >
+
+	 <result column="dmId"  property="dmId"/> 
+<result column="sellerId"  property="sellerId"/> 
+<result column="couponId"  property="couponId"/> 
+<result column="userId"  property="userId"/> 
+<result column="crtime"  property="crtime"/> 
+<result column="orderType"  property="orderType"/> 
+<result column="orderPrice"  property="orderPrice"/> 
+<result column="chargeTime"  property="chargeTime"/> 
+<result column="orderStatus"  property="orderStatus"/> 
+<result column="threeSerialNumber"  property="threeSerialNumber"/> 
+<result column="couponPrice"  property="couponPrice"/> 
+<result column="paymentPrice"  property="paymentPrice"/> 
+<result column="receivingPhone"  property="receivingPhone"/> 
+<result column="receivingName"  property="receivingName"/> 
+<result column="houseNumber"  property="houseNumber"/> 
+<result column="receivingAddress"  property="receivingAddress"/> 
+<result column="goodsCount"  property="goodsCount"/> 
+<result column="payStatus"  property="payStatus"/> 
+<result column="makeTime"  property="makeTime"/> 
+<result column="sendFee"  property="sendFee"/> 
+<result column="mealFee"  property="mealFee"/> 
+<result column="transactionStatus"  property="transactionStatus"/> 
+<result column="receivingStatus"  property="receivingStatus"/> 
+<result column="refundStatus"  property="refundStatus"/> 
+<result column="sellerOrderStatus"  property="sellerOrderStatus"/> 
+<result column="note"  property="note"/> 
+<result column="payType"  property="payType"/> 
+<result column="refundNote"  property="refundNote"/> 
+<result column="paOrdersId"  property="paOrdersId"/> 
+<result column="reviews"  property="reviews"/> 
+
+</resultMap>
+
+
+
+<!-- order table all fields -->
+
+<sql id="Base_Column_List" >
+
+	 t.dmId,t.sellerId,t.couponId,t.userId,t.crtime,t.orderType,t.orderPrice,t.chargeTime,t.orderStatus,t.threeSerialNumber,t.couponPrice,t.paymentPrice,t.receivingPhone,t.receivingName,t.houseNumber,t.receivingAddress,t.goodsCount,t.payStatus,t.makeTime,t.sendFee,t.mealFee,t.transactionStatus,t.receivingStatus,t.refundStatus,t.sellerOrderStatus,t.note,t.payType,t.refundNote
+,t.paOrdersId,t.reviews 
+</sql>
+
+
+
+<!-- 查询条件 -->
+
+<sql id="Example_Where_Clause">
+
+<where>
+
+	<if test="dmId != null  ">
+		 and t.dmId=#{dmId}
+	</if>
+	<if test="sellerId != null  ">
+		 and t.sellerId=#{sellerId}
+	</if>
+	<if test="couponId != null  ">
+		 and t.couponId=#{couponId}
+	</if>
+	<if test="userId != null  ">
+		 and t.userId=#{userId}
+	</if>
+	<if test="crtime != null  ">
+		 and t.crtime=#{crtime}
+	</if>
+	<if test="orderType != null  ">
+		 and t.orderType=#{orderType}
+	</if>
+	<if test="orderPrice != null  ">
+		 and t.orderPrice=#{orderPrice}
+	</if>
+	<if test="chargeTime != null  ">
+		 and t.chargeTime=#{chargeTime}
+	</if>
+	<if test="orderStatus != null  ">
+		 and t.orderStatus=#{orderStatus}
+	</if>
+	<if test="threeSerialNumber != null  and threeSerialNumber != '' ">
+		 and t.threeSerialNumber=#{threeSerialNumber}
+	</if>
+	<if test="couponPrice != null  ">
+		 and t.couponPrice=#{couponPrice}
+	</if>
+	<if test="paymentPrice != null  ">
+		 and t.paymentPrice=#{paymentPrice}
+	</if>
+	<if test="receivingPhone != null  and receivingPhone != '' ">
+		 and t.receivingPhone=#{receivingPhone}
+	</if>
+	<if test="receivingName != null  and receivingName != '' ">
+		 and t.receivingName=#{receivingName}
+	</if>
+	<if test="houseNumber != null  and houseNumber != '' ">
+		 and t.houseNumber=#{houseNumber}
+	</if>
+	<if test="receivingAddress != null  and receivingAddress != '' ">
+		 and t.receivingAddress=#{receivingAddress}
+	</if>
+	<if test="goodsCount != null  ">
+		 and t.goodsCount=#{goodsCount}
+	</if>
+	<if test="payStatus != null  ">
+		 and t.payStatus=#{payStatus}
+	</if>
+	<if test="makeTime != null  ">
+		 and t.makeTime=#{makeTime}
+	</if>
+	<if test="sendFee != null  ">
+		 and t.sendFee=#{sendFee}
+	</if>
+	<if test="mealFee != null  ">
+		 and t.mealFee=#{mealFee}
+	</if>
+	<if test="transactionStatus != null  ">
+		 and t.transactionStatus=#{transactionStatus}
+	</if>
+	<if test="receivingStatus != null  ">
+		 and t.receivingStatus=#{receivingStatus}
+	</if>
+	<if test="refundStatus != null  ">
+		 and t.refundStatus=#{refundStatus}
+	</if>
+	<if test="sellerOrderStatus != null  ">
+		 and t.sellerOrderStatus=#{sellerOrderStatus}
+	</if>
+	<if test="note != null  and note != '' ">
+		 and t.note=#{note}
+	</if>
+	<if test="payType != null  ">
+		 and t.payType=#{payType}
+	</if>
+	<if test="refundNote != null  and refundNote != '' ">
+		 and t.refundNote=#{refundNote}
+	</if>
+	<if test="paOrdersId != null  and paOrdersId != '' ">
+		 and t.paOrdersId=#{paOrdersId}
+	</if>
+	<if test="reviews != null  and reviews != '' ">
+		 and t.reviews=#{reviews}
+	</if>
+</where>
+
+</sql>
+
+   
+
+
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+
+<insert id="addVo" parameterType="Object" >
+
+  insert into `order`(dmId,sellerId,couponId,userId,crtime,orderType,orderPrice,chargeTime,orderStatus,threeSerialNumber,couponPrice,paymentPrice,receivingPhone,receivingName,houseNumber,receivingAddress,goodsCount,payStatus,makeTime,sendFee,mealFee,transactionStatus,receivingStatus,refundStatus,sellerOrderStatus,note,payType,refundNote,reviews)
+ values(#{dmId},#{sellerId},#{couponId},#{userId},#{crtime},#{orderType},#{orderPrice},#{chargeTime},#{orderStatus},#{threeSerialNumber},#{couponPrice},#{paymentPrice},#{receivingPhone},#{receivingName},#{houseNumber},#{receivingAddress},#{goodsCount},#{payStatus},#{makeTime},#{sendFee},#{mealFee},#{transactionStatus},#{receivingStatus},#{refundStatus},#{sellerOrderStatus},#{note},#{payType},#{refundNote},#{reviews})
+
+</insert>
+
+<!--批量插入记录 -->
+
+<insert id="addList" parameterType="java.util.List">
+
+  insert into `order`(dmId,sellerId,couponId,userId,crtime,orderType,orderPrice,chargeTime,orderStatus,threeSerialNumber,couponPrice,paymentPrice,receivingPhone,receivingName,houseNumber,receivingAddress,goodsCount,payStatus,makeTime,sendFee,mealFee,transactionStatus,receivingStatus,refundStatus,sellerOrderStatus,note,payType,refundNote,reviews) values
+
+   <foreach collection="list" item="item" index="index" separator=",">
+
+	  (
+
+	  	 #{item.dmId},#{item.sellerId},#{item.couponId},#{item.userId},#{item.crtime},#{item.orderType},#{item.orderPrice},#{item.chargeTime},#{item.orderStatus},#{item.threeSerialNumber},#{item.couponPrice},#{item.paymentPrice},#{item.receivingPhone},#{item.receivingName},#{item.houseNumber},#{item.receivingAddress},#{item.goodsCount},#{item.payStatus},#{item.makeTime},#{item.sendFee},#{item.mealFee},#{item.transactionStatus},#{item.receivingStatus},#{item.refundStatus},#{item.sellerOrderStatus},#{item.note},#{item.payType},#{item.refundNote},#{reviews}
+
+	  )
+
+	  </foreach> 
+
+</insert>
+
+
+
+
+
+<!-- 删除记录 -->
+
+<delete id="delId" parameterType="Object">
+
+	delete 	 from `order` where dmId = #{dmId}
+
+</delete>
+
+<!--批量删除-->
+
+<delete id="delIds" parameterType="java.lang.String">
+
+	delete 	 from `order` where dmId in 
+
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+
+	#{idItem}
+
+	</foreach> 
+
+</delete>
+
+<!--批量删除-->
+
+<delete id="delList" parameterType="java.util.List">
+
+	delete 	 from `order` where dmId in 
+
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+
+	#{idItem}
+
+	</foreach> 
+
+</delete>
+
+
+
+<!-- 根据id，修改记录-->  
+
+ <update id="modVo" parameterType="Object" >
+
+  update `order` set sellerId=#{sellerId},couponId=#{couponId},userId=#{userId},crtime=#{crtime},orderType=#{orderType},orderPrice=#{orderPrice},chargeTime=#{chargeTime},orderStatus=#{orderStatus},threeSerialNumber=#{threeSerialNumber},couponPrice=#{couponPrice},paymentPrice=#{paymentPrice},receivingPhone=#{receivingPhone},receivingName=#{receivingName},houseNumber=#{houseNumber},receivingAddress=#{receivingAddress},goodsCount=#{goodsCount},payStatus=#{payStatus},makeTime=#{makeTime},sendFee=#{sendFee},mealFee=#{mealFee},transactionStatus=#{transactionStatus},receivingStatus=#{receivingStatus},refundStatus=#{refundStatus},sellerOrderStatus=#{sellerOrderStatus},note=#{note},payType=#{payType},refundNote=#{refundNote} where dmId=#{dmId}
+
+ </update>
+
+ <!-- 修改记录，只修改只不为空的字段 -->
+
+<update id="modVoNotNull" parameterType="Object" >
+
+	update `order` set 
+	<trim  suffixOverrides="," >
+	<if test="sellerId != null  ">
+		sellerId=#{sellerId},
+	</if>
+	<if test="couponId != null  ">
+		couponId=#{couponId},
+	</if>
+	<if test="userId != null  ">
+		userId=#{userId},
+	</if>
+	<if test="crtime != null  ">
+		crtime=#{crtime},
+	</if>
+	<if test="orderType != null  ">
+		orderType=#{orderType},
+	</if>
+	<if test="orderPrice != null  ">
+		orderPrice=#{orderPrice},
+	</if>
+	<if test="chargeTime != null  ">
+		chargeTime=#{chargeTime},
+	</if>
+	<if test="orderStatus != null  ">
+		orderStatus=#{orderStatus},
+	</if>
+	<if test="threeSerialNumber != null  and threeSerialNumber != '' ">
+		threeSerialNumber=#{threeSerialNumber},
+	</if>
+	<if test="couponPrice != null  ">
+		couponPrice=#{couponPrice},
+	</if>
+	<if test="paymentPrice != null  ">
+		paymentPrice=#{paymentPrice},
+	</if>
+	<if test="receivingPhone != null  and receivingPhone != '' ">
+		receivingPhone=#{receivingPhone},
+	</if>
+	<if test="receivingName != null  and receivingName != '' ">
+		receivingName=#{receivingName},
+	</if>
+	<if test="houseNumber != null  and houseNumber != '' ">
+		houseNumber=#{houseNumber},
+	</if>
+	<if test="receivingAddress != null  and receivingAddress != '' ">
+		receivingAddress=#{receivingAddress},
+	</if>
+	<if test="goodsCount != null  ">
+		goodsCount=#{goodsCount},
+	</if>
+	<if test="payStatus != null  ">
+		payStatus=#{payStatus},
+	</if>
+	<if test="makeTime != null  ">
+		makeTime=#{makeTime},
+	</if>
+	<if test="sendFee != null  ">
+		sendFee=#{sendFee},
+	</if>
+	<if test="mealFee != null  ">
+		mealFee=#{mealFee},
+	</if>
+	<if test="transactionStatus != null  ">
+		transactionStatus=#{transactionStatus},
+	</if>
+	<if test="receivingStatus != null  ">
+		receivingStatus=#{receivingStatus},
+	</if>
+	<if test="refundStatus != null  ">
+		refundStatus=#{refundStatus},
+	</if>
+	<if test="sellerOrderStatus != null  ">
+		sellerOrderStatus=#{sellerOrderStatus},
+	</if>
+	<if test="note != null  and note != '' ">
+		note=#{note},
+	</if>
+	<if test="payType != null  ">
+		payType=#{payType},
+	</if>
+	<if test="refundNote != null  and refundNote != '' ">
+		refundNote=#{refundNote},
+	</if>
+	<if test="paOrdersId != null  and paOrdersId != '' ">
+		paOrdersId=#{paOrdersId},
+	</if>
+	<if test="reviews != null  and reviews != '' ">
+		reviews=#{reviews},
+	</if>
+	</trim> where dmId=#{dmId}
+
+</update>
+
+
+
+
+
+ 
+
+<!-- 根据id查询 订单 -->
+
+<select id="findVo"  resultMap="BaseResultMap" parameterType="Object">
+
+	select <include refid="Base_Column_List" /> 
+	 from `order` t where t.dmId = #{dmId}
+
+</select>
+
+
+
+<!-- 订单 列表总数-->
+
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+
+	select count(1) from `order` t 
+
+	<include refid="Example_Where_Clause"/>
+	<if test="orderStartTime != null">
+		and t.crtime &gt;=#{orderStartTime}
+	</if>
+	<if test="orderEndTime != null">
+		and t.crtime &lt;=#{orderEndTime}
+	</if>
+	<if test="payStartTime != null">
+		and t.chargeTime &gt;=#{payStartTime}
+	</if>
+	<if test="payEndTime != null">
+		and t.chargeTime &lt;=#{payEndTime}
+	</if>
+</select>
+
+
+
+<!-- 分页查询订单列表 -->
+
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+
+	select 
+
+	<include refid="Base_Column_List"/>
+
+	from `order` t 
+
+	<include refid="Example_Where_Clause"/>
+	<if test="orderStartTime != null">
+		and t.crtime &gt;=#{orderStartTime}
+	</if>
+	<if test="orderEndTime != null">
+		and t.crtime &lt;=#{orderEndTime}
+	</if>
+	<if test="payStartTime != null">
+		and t.chargeTime &gt;=#{payStartTime}
+	</if>
+	<if test="payEndTime != null">
+		and t.chargeTime &lt;=#{payEndTime}
+	</if>
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+		 ${mysqlQueryCondition} 
+    </if>
+	
+
+</select>
+
+
+
+<!-- 查询订单列表 -->
+
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+
+	select 
+
+	<include refid="Base_Column_List"/>
+
+	from `order` t 
+
+	<include refid="Example_Where_Clause"/>
+
+</select>
+<!-- 查询需要自动关闭的订单 -->
+<select id="queryCloseOrder" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select <include refid="Base_Column_List"/>
+	from `order` t where  t.orderStatus=4  and  <![CDATA[ t.makeTime < #{ctime} ]]>  limit 0,300;
+</select>
+<!-- 查询交易关闭订单 -->
+<select id="queryTransactionClose" resultMap="BaseResultMap" parameterType="Map">
+	select <include refid="Base_Column_List"/>
+	from `order` t where  (t.orderStatus=0 or t.orderStatus=6) and t.orderType=#{orderType} and t.sellerId=#{userId} order by t.crtime desc limit #{pageIndex},20;
+</select>
+<!-- 查询商家的客户 -->
+<select id="querySellerCummer" resultMap="BaseResultMap" parameterType="Map">
+	SELECT distinct userId   FROM `order` where   payStatus=0 and sellerid=#{sellerId}  order by chargeTime desc   limit #{pageIndex},20;
+</select>
+<!-- 取消优惠劵支付 -->
+<update id="updateCancelOrderCoupon" parameterType="java.util.HashMap">
+ 	update `order` set couponId=null , paymentPrice=#{payPrice},couponPrice=null where dmId=#{orderId};
+</update>
+
+<resultMap type="java.util.Map" id="queryCountOrderDayMap">
+<result column="crtime" property="crtime"/>
+
+<result column="dayCount" property="dayCount"/>
+
+<!-- <result column="dayCount" property="dayCount"/> -->
+
+</resultMap>
+<!-- 查询订单每月统计 -->
+<select id="queryCountOrderMonth" resultMap="queryCountOrderDayMap" parameterType="java.util.Map">
+	select <include refid="Base_Column_List"/> , count(*) as dayCount from `order` t
+	where t.payStatus = 0  and t.sellerId=#{userId} and t.sellerOrderStatus=0 and t.refundStatus=0
+	and DATE_FORMAT(from_unixtime(t.crtime/1000,"%Y-%m-%d"),"%Y-%m")=#{month} group by FROM_UNIXTIME(crtime/1000,'%d' ) order by t.crtime desc
+	limit #{pageIndex},#{pageSize} ;
+</select>
+<!-- 加锁访问 -->
+<select id="getLockOrder" resultMap="BaseResultMap" parameterType="Object">
+select <include refid="Base_Column_List"/> from `order` t where t.dmId=#{orderId} for update
+</select>
+<!-- 查询过年期间下单用户 -->
+<select id="queryTempOrder" resultMap="BaseResultMap">
+select <include refid="Base_Column_List"/> from `order` t where t.payStatus=0 and t.sellerOrderStatus=0 and DATE_FORMAT(from_unixtime(t.crtime/1000,"%Y-%m-%d"),"%Y-%m-%d")>="2016-01-25"
+</select>
+<select id="getOrdersToExport" resultType="map" parameterType="map">
+SELECT
+	t.dmId,
+	t.sellerId,
+	t.couponId,
+	t.userId,
+	FROM_UNIXTIME(
+		t.crtime / 1000,
+		'%Y-%m-%d %H:%i:%S'
+	) crtime,
+	t.orderType,
+	t.orderPrice,
+	FROM_UNIXTIME(
+		t.chargeTime / 1000,
+		'%Y-%m-%d %H:%i:%S'
+	) chargeTime,
+	t.orderStatus,
+	t.threeSerialNumber,
+	t.couponPrice,
+	t.paymentPrice,
+	t.receivingPhone,
+	t.receivingName,
+	t.houseNumber,
+	t.receivingAddress,
+	t.goodsCount,
+	t.payStatus,
+	t.makeTime,
+	t.sendFee,
+	t.mealFee,
+	t.transactionStatus,
+	t.receivingStatus,
+	t.refundStatus,
+	t.sellerOrderStatus,
+	t.note,
+	t.payType,
+	t.refundNote
+FROM
+	`order` t
+WHERE
+	t.orderType = #{orderType}
+AND	t.crtime BETWEEN #{beginTime}
+AND #{endTime}
+</select>
+</mapper>

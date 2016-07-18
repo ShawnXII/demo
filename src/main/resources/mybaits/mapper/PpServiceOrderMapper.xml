@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.order.service.dao.PpServiceOrderDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+<!-- Result Map com.qtz.dm..vo.PpServiceOrder-->
+<resultMap id="BaseResultMap" type="com.qtz.base.dto.order.PpServiceOrder" >
+<result column="dmId"  property="dmId"/> 
+<result column="buyId"  property="buyId"/> 
+<result column="payType"  property="payType"/> 
+<result column="userId"  property="userId"/> 
+<result column="threeSerialNumber"  property="threeSerialNumber"/> 
+<result column="paymentPrice"  property="paymentPrice"/> 
+<result column="payStatus"  property="payStatus"/> 
+<result column="originalPrice"  property="originalPrice"/> 
+<result column="crtime"  property="crtime"/> 
+<result column="toPayAmount"  property="toPayAmount"/> 
+<result column="chargeTime"  property="chargeTime"/> 
+<result column="snapshot"  property="snapshot"/> 
+<result column="isHandle"  property="isHandle"/> 	
+</resultMap>
+
+<!-- pp_service_order table all fields -->
+<sql id="Base_Column_List" >
+	 t.dmId,t.buyId,t.payType,t.userId,t.threeSerialNumber,t.paymentPrice,t.payStatus,t.originalPrice,t.crtime,t.toPayAmount,t.chargeTime,t.snapshot,t.isHandle
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	<if test="1 == 1  ">
+		and 1=1
+	</if>
+	<if test="dmId != null  ">
+		 and t.dmId=#{dmId}
+	</if>
+	<if test="buyId != null  ">
+		 and t.buyId=#{buyId}
+	</if>
+	<if test="payType != null  ">
+		 and t.payType=#{payType}
+	</if>
+	<if test="userId != null  ">
+		 and t.userId=#{userId}
+	</if>
+	<if test="threeSerialNumber != null  and threeSerialNumber != '' ">
+		 and t.threeSerialNumber=#{threeSerialNumber}
+	</if>
+	<if test="paymentPrice != null  ">
+		 and t.paymentPrice=#{paymentPrice}
+	</if>
+	<if test="payStatus != null  ">
+		 and t.payStatus=#{payStatus}
+	</if>
+	<if test="originalPrice != null  ">
+		 and t.originalPrice=#{originalPrice}
+	</if>
+	<if test="crtime != null  ">
+		 and t.crtime=#{crtime}
+	</if>
+	<if test="toPayAmount != null  ">
+		 and t.toPayAmount=#{toPayAmount}
+	</if>
+	<if test="chargeTime != null  ">
+		 and t.chargeTime=#{chargeTime}
+	</if>
+	<if test="snapshot != null  and snapshot != '' ">
+		 and t.snapshot=#{snapshot}
+	</if>
+	<if test="isHandle != null  ">
+		 and t.isHandle=#{isHandle}
+	</if>
+
+</where>
+</sql>
+   
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into pp_service_order(dmId,buyId,payType,userId,threeSerialNumber,paymentPrice,payStatus,originalPrice,crtime,toPayAmount,chargeTime,snapshot,isHandle)
+ values(#{dmId},#{buyId},#{payType},#{userId},#{threeSerialNumber},#{paymentPrice},#{payStatus},#{originalPrice},#{crtime},#{toPayAmount},#{chargeTime},#{snapshot},#{isHandle})
+</insert>
+<!--批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into pp_service_order(dmId,buyId,payType,userId,threeSerialNumber,paymentPrice,payStatus,originalPrice,crtime,toPayAmount,chargeTime,snapshot,isHandle) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	  	 #{item.dmId},#{item.buyId},#{item.payType},#{item.userId},#{item.threeSerialNumber},#{item.paymentPrice},#{item.payStatus},#{item.originalPrice},#{item.crtime},#{item.toPayAmount},#{item.chargeTime},#{item.snapshot},#{item.isHandle}
+	  )
+	  </foreach> 
+</insert>
+
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from pp_service_order where dmId = #{dmId}
+</delete>
+<!--批量删除-->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from pp_service_order where dmId in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+<!--批量删除-->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from pp_service_order where dmId in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录-->  
+ <update id="modVo" parameterType="Object" >
+  update pp_service_order set buyId=#{buyId},payType=#{payType},userId=#{userId},threeSerialNumber=#{threeSerialNumber},paymentPrice=#{paymentPrice},payStatus=#{payStatus},originalPrice=#{originalPrice},crtime=#{crtime},toPayAmount=#{toPayAmount},chargeTime=#{chargeTime},snapshot=#{snapshot},isHandle=#{isHandle} where dmId=#{dmId}
+ </update>
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update pp_service_order set 
+	<trim  suffixOverrides="," >
+	<if test="buyId != null  ">
+		buyId=#{buyId},
+	</if>
+	<if test="payType != null  ">
+		payType=#{payType},
+	</if>
+	<if test="userId != null  ">
+		userId=#{userId},
+	</if>
+	<if test="threeSerialNumber != null  and threeSerialNumber != '' ">
+		threeSerialNumber=#{threeSerialNumber},
+	</if>
+	<if test="paymentPrice != null  ">
+		paymentPrice=#{paymentPrice},
+	</if>
+	<if test="payStatus != null  ">
+		payStatus=#{payStatus},
+	</if>
+	<if test="originalPrice != null  ">
+		originalPrice=#{originalPrice},
+	</if>
+	<if test="crtime != null  ">
+		crtime=#{crtime},
+	</if>
+	<if test="toPayAmount != null  ">
+		toPayAmount=#{toPayAmount},
+	</if>
+	<if test="chargeTime != null  ">
+		chargeTime=#{chargeTime},
+	</if>
+	<if test="snapshot != null  and snapshot != '' ">
+		snapshot=#{snapshot},
+	</if>
+	<if test="isHandle != null  ">
+		isHandle=#{isHandle},
+	</if>
+	
+	</trim> where dmId=#{dmId}
+</update>
+
+
+ 
+<!-- 根据id查询 goods -->
+<select id="findVo"  resultMap="BaseResultMap" parameterType="Object">
+	select <include refid="Base_Column_List" /> 
+	 from pp_service_order t where t.dmId = #{dmId}
+</select>
+
+<!-- goods 列表总数-->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from pp_service_order t
+	<include refid="Example_Where_Clause"/>
+	<if test="startTime != null">
+		and t.crtime &gt;=#{startTime}
+	</if>
+	<if test="endTime != null">
+		and t.crtime &lt;=#{endTime}
+	</if>
+	<if test="payStime != null">
+		and t.chargeTime &gt;=#{payStime}
+	</if>
+	<if test="payEtime != null">
+		and t.chargeTime &lt;=#{payEtime}
+	</if>
+</select>
+
+<!-- 分页查询goods列表 -->
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from pp_service_order t
+	<include refid="Example_Where_Clause"/>
+	<if test="startTime != null">
+		and t.crtime &gt;=#{startTime}
+	</if>
+	<if test="endTime != null">
+		and t.crtime &lt;=#{endTime}
+	</if>
+	<if test="payStime != null">
+		and t.chargeTime &gt;=#{payStime}
+	</if>
+	<if test="payEtime != null">
+		and t.chargeTime &lt;=#{payEtime}
+	</if>
+	
+	<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+     	${mysqlQueryCondition} 
+    </if>
+</select>
+
+<!-- 查询goods列表 -->
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from pp_service_order t 
+	<include refid="Example_Where_Clause"/>
+</select>
+<!-- 查询是否试用商品 -->
+<select id="queryIsTrialPpStore" parameterType="java.util.Map" resultType="Integer">
+select count(*) from pp_service_order t where t.snapshot like "%com.ppsh.co.store.sy%" and t.userId=#{userId} and t.payStatus=0
+</select>
+<!-- 获取订单 -->
+<select id="getLockOrder" parameterType="Object" resultMap="BaseResultMap">
+	select <include refid="Base_Column_List"/> from pp_service_order t where t.dmId=#{orderId} for update
+</select>
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qtz.order.service.dao.OrderGoodsDao" >
+<!-- 开启缓存 -->
+<cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
+<!-- Result Map com.qtz.dm.order.vo.OrderGoods-->
+<resultMap id="BaseResultMap" type="com.qtz.order.service.vo.OrderGoods" >
+	 <result column="dmId"  property="dmId"/> 
+<result column="orderId"  property="orderId"/> 
+<result column="goodsName"  property="goodsName"/> 
+<result column="goodsNum"  property="goodsNum"/> 
+<result column="goodsTotalPrice"  property="goodsTotalPrice"/> 
+<result column="goodsPrice"  property="goodsPrice"/> 
+<result column="goodsId"  property="goodsId"/> 
+	
+</resultMap>
+
+<!-- order_goods table all fields -->
+<sql id="Base_Column_List" >
+	 t.dmId,t.orderId,t.goodsName,t.goodsNum,t.goodsTotalPrice,t.goodsPrice,t.goodsId
+</sql>
+
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+<where>
+	<if test="dmId != null  ">
+		 and t.dmId=#{dmId}
+	</if>
+	<if test="orderId != null  ">
+		 and t.orderId=#{orderId}
+	</if>
+	<if test="goodsName != null  and goodsName != '' ">
+		 and t.goodsName=#{goodsName}
+	</if>
+	<if test="goodsNum != null  ">
+		 and t.goodsNum=#{goodsNum}
+	</if>
+	<if test="goodsTotalPrice != null  ">
+		 and t.goodsTotalPrice=#{goodsTotalPrice}
+	</if>
+	<if test="goodsPrice != null  ">
+		 and t.goodsPrice=#{goodsPrice}
+	</if>
+	<if test="goodsId != null  ">
+		 and t.goodsId=#{goodsId}
+	</if>
+
+</where>
+</sql>
+   
+
+<!-- 插入记录 [说明：如果要返回当前对象，需要如下配置：<insert id="addVo" parameterType="Object" useGeneratedKeys="true" keyProperty="id">] -->
+<insert id="addVo" parameterType="Object" >
+  insert into order_goods(dmId,orderId,goodsName,goodsNum,goodsTotalPrice,goodsPrice,goodsId)
+ values(#{dmId},#{orderId},#{goodsName},#{goodsNum},#{goodsTotalPrice},#{goodsPrice},#{goodsId})
+</insert>
+<!--批量插入记录 -->
+<insert id="addList" parameterType="java.util.List">
+  insert into order_goods(dmId,orderId,goodsName,goodsNum,goodsTotalPrice,goodsPrice,goodsId) values
+   <foreach collection="list" item="item" index="index" separator=",">
+	  (
+	  	 #{item.dmId},#{item.orderId},#{item.goodsName},#{item.goodsNum},#{item.goodsTotalPrice},#{item.goodsPrice},#{item.goodsId}
+	  )
+	  </foreach> 
+</insert>
+
+
+<!-- 删除记录 -->
+<delete id="delId" parameterType="Object">
+	delete 	 from order_goods where dmId = #{dmId}
+</delete>
+<!--批量删除-->
+<delete id="delIds" parameterType="java.lang.String">
+	delete 	 from order_goods where dmId in 
+	<foreach item="idItem" collection="array" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+<!--批量删除-->
+<delete id="delList" parameterType="java.util.List">
+	delete 	 from order_goods where dmId in 
+	<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")"> 
+	#{idItem}
+	</foreach> 
+</delete>
+
+<!-- 根据id，修改记录-->  
+ <update id="modVo" parameterType="Object" >
+  update order_goods set orderId=#{orderId},goodsName=#{goodsName},goodsNum=#{goodsNum},goodsTotalPrice=#{goodsTotalPrice},goodsPrice=#{goodsPrice},goodsId=#{goodsId} where dmId=#{dmId}
+ </update>
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="modVoNotNull" parameterType="Object" >
+	update order_goods set 
+	<trim  suffixOverrides="," >
+	<if test="orderId != null  ">
+		orderId=#{orderId},
+	</if>
+	<if test="goodsName != null  and goodsName != '' ">
+		goodsName=#{goodsName},
+	</if>
+	<if test="goodsNum != null  ">
+		goodsNum=#{goodsNum},
+	</if>
+	<if test="goodsTotalPrice != null  ">
+		goodsTotalPrice=#{goodsTotalPrice},
+	</if>
+	<if test="goodsPrice != null  ">
+		goodsPrice=#{goodsPrice},
+	</if>
+	<if test="goodsId != null  ">
+		goodsId=#{goodsId},
+	</if>
+	</trim> where dmId=#{dmId}
+</update>
+
+
+ 
+<!-- 根据id查询 订单对应商品 -->
+<select id="findVo"  resultMap="BaseResultMap" parameterType="Object">
+	select <include refid="Base_Column_List" /> 
+	 from order_goods t where t.dmId = #{dmId}
+</select>
+
+<!-- 订单对应商品 列表总数-->
+<select id="queryCount" resultType="java.lang.Integer"  parameterType="Object">
+	select count(1) from order_goods t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+<!-- 分页查询订单对应商品列表 -->
+<select id="queryList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from order_goods t 
+	<include refid="Example_Where_Clause"/>
+	
+    <if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+       ${mysqlQueryCondition}
+    </if>
+</select>
+
+<!-- 查询订单对应商品列表 -->
+<select id="findList" resultMap="BaseResultMap"  parameterType="Object">
+	select 
+	<include refid="Base_Column_List"/>
+	from order_goods t 
+	<include refid="Example_Where_Clause"/>
+</select>
+
+</mapper>
