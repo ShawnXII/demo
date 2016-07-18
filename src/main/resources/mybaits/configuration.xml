@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+  <settings>		
+  	<setting name="cacheEnabled" value="true"/>
+    <setting name="defaultExecutorType" value="REUSE" />
+  </settings>
+  <typeAliases>
+		<!-- 这里配置别名 -->
+		<!-- <typeAlias type="com.qtz.dm.user.vo.User" alias="User"/>
+		<typeAlias type="com.qtz.dm.system.vo.Category" alias="Category"/>
+		<typeAlias alias="Region" type="com.qtz.dm.system.vo.Region"/>  -->
+		<package name="com.qtz.system" />
+  </typeAliases>
+<!-- <mappers>-->
+<!--    <mapper resource="resources/StudentMapper.xml"/>-->
+<!-- </mappers>-->
+</configuration>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans        
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://code.alibabatech.com/schema/dubbo        
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd       
+   ">
+ 
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="qtz-order-service"/>
+    
+ 	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${ZOOKEEPER_IP}" />
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+    <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
+ <!-- ##################################对外提供的服务################################## -->
+	<dubbo:service  interface="com.qtz.order.spi.service.OrderGoodsService"  ref="orderGoodsServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.order.spi.service.OrderLogService"  ref="orderLogServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.order.spi.service.OrderService"  ref="orderServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.order.spi.service.PpServiceOrderService"  ref="ppServiceOrderServiceImpl" timeout="50000" version="1.0" />  
+	<!-- ##################################依赖外部的服务################################## -->	
+	<dubbo:reference id="paymentServiceImpl" interface="com.qtz.payment.spi.service.PaymentService" version="1.0" check="false"/>
+	<dubbo:reference id="alipayServiceImpl" interface="com.qtz.payment.spi.service.AlipayService" version="1.0" check="false"/>
+	<dubbo:reference id="jdPayServiceImpl" interface="com.qtz.payment.spi.service.JdPayService" version="1.0" check="false"/>
+	<dubbo:reference id="ysPayServiceImpl" interface="com.qtz.payment.spi.service.YsPayService" version="1.0" check="false"/>
+	<dubbo:reference id="zfPayServiceImpl" interface="com.qtz.payment.spi.service.ZfPayService" version="1.0" check="false"/>
+	<dubbo:reference id="pAPayServiceImpl" interface="com.qtz.payment.spi.service.PAPayService" version="1.0" check="false"/>
+	<dubbo:reference id="yeePayServiceImpl" interface="com.qtz.payment.spi.service.YeePayService" version="1.0" check="false"/>
+	<dubbo:reference id="cnPayServiceImpl" interface="com.qtz.payment.spi.service.CnPayService" version="1.0" check="false"/>
+	<dubbo:reference id="mbPayServiceImpl" interface="com.qtz.payment.spi.service.MbPayService" version="1.0" check="false"/>
+	<dubbo:reference id="msPayServiceImpl" interface="com.qtz.payment.spi.service.MsPayService" version="1.0" check="false"/>
+	<dubbo:reference id="zxPayServiceImpl" interface="com.qtz.payment.spi.service.ZxPayService" version="1.0" check="false"/>
+	<dubbo:reference id="ghtPayServiceImpl" interface="com.qtz.payment.spi.service.GhtPayService" version="1.0" check="false"/>
+	<dubbo:reference id="llPayServiceImpl" interface="com.qtz.payment.spi.service.LlPayService" version="1.0" check="false"/>
+	<dubbo:reference id="lakalaPayServiceImpl" interface="com.qtz.payment.spi.service.LakalaPayService" version="1.0" check="false"/>
+	
+	<dubbo:reference id="sellerStoreServiceImpl" interface="com.qtz.member.spi.store.service.SellerStoreService" version="1.0" check="false"/>
+	<dubbo:reference id="usersShopServiceImpl" interface="com.qtz.member.spi.user.service.UsersShopService" version="1.0" check="false"/>
+	<dubbo:reference id="couponServiceImpl" interface="com.qtz.member.spi.coupon.service.CouponService" version="1.0" check="false"/>
+	<dubbo:reference id="couponUserServiceImpl" interface="com.qtz.member.spi.coupon.service.CouponUserService" version="1.0" check="false"/>
+	<dubbo:reference id="userReceivingInfoServiceImpl" interface="com.qtz.member.spi.user.service.UserReceivingInfoService" version="1.0" check="false"/>
+	<dubbo:reference id="usersServiceImpl" interface="com.qtz.member.spi.user.service.UsersService" version="1.0" check="false"/>
+	<dubbo:reference id="userWalletServiceImpl" interface="com.qtz.member.spi.userwallet.service.UserWalletService" version="1.0" check="false"/>
+	<dubbo:reference id="reconciliationRecordServiceImpl" interface="com.qtz.member.spi.userwallet.service.ReconciliationRecordService" version="1.0" check="false"/>
+	
+	<dubbo:reference id="storeGoodsServiceImpl" interface="com.qtz.goods.spi.service.StoreGoodsService" version="1.0" check="false"/>
+	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService" version="1.0" check="false"/>
+	
+	<dubbo:reference id="jPushMessageServiceImpl" interface="com.qtz.system.spi.jpush.service.JPushMessageService" version="1.0" check="false"/>
+	
+</beans>
+
