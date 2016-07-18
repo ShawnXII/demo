@@ -2,13 +2,13 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.qtz.order.service.dao.OrderDao" >
+<mapper namespace="com.qtz.ppsh.order.service.dao.OrderDao" >
 <!-- 开启缓存 -->
 <cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
 
 <!-- Result Map com.qtz.dm.order.vo.Order-->
 
-<resultMap id="BaseResultMap" type="com.qtz.order.service.vo.Order" >
+<resultMap id="BaseResultMap" type="com.qtz.ppsh.order.service.vo.Order" >
 
 	 <result column="dmId"  property="dmId"/> 
 <result column="sellerId"  property="sellerId"/> 

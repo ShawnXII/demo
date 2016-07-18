@@ -9,17 +9,17 @@
    ">
  
     <!-- 提供方应用信息，用于计算依赖关系 -->
-    <dubbo:application name="qtz-order-service"/>
+    <dubbo:application name="qtz-ppsh-order-service"/>
     
  	<!-- 使用zookeeper注册中心暴露服务地址 -->
 	<dubbo:registry protocol="zookeeper" address="${ZOOKEEPER_IP}" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
  <!-- ##################################对外提供的服务################################## -->
-	<dubbo:service  interface="com.qtz.order.spi.service.OrderGoodsService"  ref="orderGoodsServiceImpl" timeout="50000" version="1.0" />  
-    <dubbo:service  interface="com.qtz.order.spi.service.OrderLogService"  ref="orderLogServiceImpl" timeout="50000" version="1.0" />  
-    <dubbo:service  interface="com.qtz.order.spi.service.OrderService"  ref="orderServiceImpl" timeout="50000" version="1.0" />  
-    <dubbo:service  interface="com.qtz.order.spi.service.PpServiceOrderService"  ref="ppServiceOrderServiceImpl" timeout="50000" version="1.0" />  
+	<dubbo:service  interface="com.qtz.ppsh.order.spi.service.OrderGoodsService"  ref="orderGoodsServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.ppsh.order.spi.service.OrderLogService"  ref="orderLogServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.ppsh.order.spi.service.OrderService"  ref="orderServiceImpl" timeout="50000" version="1.0" />  
+    <dubbo:service  interface="com.qtz.ppsh.order.spi.service.PpServiceOrderService"  ref="ppServiceOrderServiceImpl" timeout="50000" version="1.0" />  
 	<!-- ##################################依赖外部的服务################################## -->	
 	<dubbo:reference id="paymentServiceImpl" interface="com.qtz.payment.spi.service.PaymentService" version="1.0" check="false"/>
 	<dubbo:reference id="alipayServiceImpl" interface="com.qtz.payment.spi.service.AlipayService" version="1.0" check="false"/>
