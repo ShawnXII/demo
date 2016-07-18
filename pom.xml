@@ -31,8 +31,8 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.qtz.ppsh.payment.spi</groupId>
-			<artifactId>qtz-ppsh-payment-spi</artifactId>
+			<groupId>com.qtz.payment.spi</groupId>
+			<artifactId>qtz-payment-spi</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
