@@ -9,8 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Kevin Chang
  *
  */
-public class OrderServiceBootstrap
-{
+public class OrderServiceBootstrap{
     private static final Logger log = Logger.getLogger(OrderServiceBootstrap.class);
     private static volatile boolean running = true;
     static ClassPathXmlApplicationContext context;
