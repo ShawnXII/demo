@@ -1,8 +1,10 @@
 package com.qtz.ppsh.order.service.service.impl;
 
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.qtz.base.common.OrderPrefix;
 import com.qtz.base.common.log.LogTool;
 import com.qtz.base.dao.BizDao;
@@ -17,10 +19,10 @@ import com.qtz.base.dto.user.UserType;
 import com.qtz.base.exception.BaseDaoException;
 import com.qtz.base.exception.BaseServiceException;
 import com.qtz.base.exception.ExceptionCode;
-import com.qtz.base.service.FifteenLongId;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.Alipay;
 import com.qtz.base.util.Arith;
+import com.qtz.base.util.IdGenerator;
 import com.qtz.base.util.XmlUtil;
 import com.qtz.goods.spi.service.PpServiceGoodsService;
 import com.qtz.member.spi.store.service.SellerStoreService;
@@ -98,7 +100,7 @@ public class PpServiceOrderServiceImpl extends
     @Autowired
     private MbPayService mbPayService;
     @Autowired
-	private FifteenLongId fifteenLongIdImpl;
+    private IdGenerator idGenerator;
     @Autowired
     private MsPayService msPayService;
     @Autowired
@@ -156,7 +158,7 @@ public class PpServiceOrderServiceImpl extends
             log.error(e);
         }
 
-        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + fifteenLongIdImpl.nextId());
+        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + idGenerator.nextId());
         
         PpServiceOrder ppServiceOrder =
                 new PpServiceOrder(Long.valueOf(pgId), reqUserId, ppServiceGoods.getOriginalPrice(), ppServiceGoods.toString(), payType.intValue(), ppServiceGoods.getPresentPrice());
