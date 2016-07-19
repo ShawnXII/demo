@@ -17,7 +17,10 @@
 
 	<!-- Spring getBean定义 -->
 	<bean id="springContextHolder" class="com.qtz.base.util.SpringContextHolder" lazy-init="false" />
-	<bean id="fifteenLongIdImpl" class="com.qtz.base.service.impl.FifteenLongIdImpl" />
+    <!-- snowflake16位长度长整形id生成器 -->
+	<bean id="idGenerator" class="com.qtz.base.util.IdGenerator">
+		<constructor-arg index="0" value="${snowflake.workerid}" />
+	</bean>	
 	<!-- 属性文件读入 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
