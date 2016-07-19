@@ -1,4 +1,4 @@
-<?xml  encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
@@ -15,6 +15,7 @@
 	<dubbo:registry protocol="zookeeper" address="${ZOOKEEPER_IP}" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
+    <!-- 服务提供者,超时时间全局设为3秒(dubbo默认为1秒),需要根据具体情况在service上来设置 -->
     <dubbo:provider version="1.0.0" timeout="3000" />
     <dubbo:consumer version="1.0.0" />
     
