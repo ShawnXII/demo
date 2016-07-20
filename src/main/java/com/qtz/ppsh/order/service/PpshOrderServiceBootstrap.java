@@ -9,17 +9,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Kevin Chang
  *
  */
-public class OrderServiceBootstrap{
-    private static final Logger log = Logger.getLogger(OrderServiceBootstrap.class);
+public class PpshOrderServiceBootstrap{
+    private static final Logger log = Logger.getLogger(PpshOrderServiceBootstrap.class);
     private static volatile boolean running = true;
     static ClassPathXmlApplicationContext context;
 
     public static void main(String[] args) throws Exception
     {
-        log.info("################orderService准备启动服务！################");
+        log.info("################ppshOrderService准备启动服务！################");
         context = new ClassPathXmlApplicationContext("applicationContext.xml");
         context.start();
-        log.info("################orderService服务启动成功！################");
+        log.info("################ppshOrderService服务启动成功！################");
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run()
             {
@@ -29,22 +29,22 @@ public class OrderServiceBootstrap{
                     context.close();
                     context = null;
                 }
-                log.info("################orderService服务已经停止!################");
-                synchronized (OrderServiceBootstrap.class)
+                log.info("################ppshOrderService服务已经停止!################");
+                synchronized (PpshOrderServiceBootstrap.class)
                 {
                     running = false;
-                    OrderServiceBootstrap.class.notify();
+                    PpshOrderServiceBootstrap.class.notify();
                 }
             }
         });
 
-        synchronized (OrderServiceBootstrap.class)
+        synchronized (PpshOrderServiceBootstrap.class)
         {
             while (running)
             {
                 try
                 {
-                    OrderServiceBootstrap.class.wait();
+                	PpshOrderServiceBootstrap.class.wait();
                 }
                 catch (Throwable e)
                 {}
