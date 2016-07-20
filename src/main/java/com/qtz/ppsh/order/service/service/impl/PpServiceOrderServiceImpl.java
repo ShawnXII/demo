@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qtz.base.common.OrderPrefix;
 import com.qtz.base.common.log.LogTool;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
@@ -40,6 +39,7 @@ import com.qtz.payment.spi.service.YsPayService;
 import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
+import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
 
 
