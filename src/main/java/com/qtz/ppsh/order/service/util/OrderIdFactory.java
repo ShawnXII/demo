@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import com.qtz.base.cache.BaseProperties;
+import com.qtz.base.util.CfgHelper;
 import com.qtz.base.util.Constants;
 import com.qtz.base.util.RedisGroupKey;
 import com.qtz.base.util.SpringContextHolder;
@@ -34,7 +34,7 @@ public class OrderIdFactory {
 		synchronized (OrderIdFactory.class) {
 			Long suffix = OrderIdSingle.getInstance().suffix()+10000;
 			//TODO 正式环境记得修改
-			orderIdPrefix=BaseProperties.getBaseProperties(Constants.orderId_prefix);
+			orderIdPrefix=CfgHelper.getValue(Constants.orderId_prefix);
 			return  Long.valueOf(orderIdPrefix+prefix+suffix);
 		}
 		
