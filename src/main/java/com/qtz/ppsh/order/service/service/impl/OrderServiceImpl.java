@@ -9,10 +9,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -38,10 +41,10 @@ import com.qtz.base.exception.BaseDaoException;
 import com.qtz.base.exception.BaseServiceException;
 import com.qtz.base.exception.ExceptionCode;
 import com.qtz.base.service.impl.BaseServiceImpl;
-import com.qtz.base.util.Alipay;
-import com.qtz.base.util.Arith;
 import com.qtz.base.util.RespKey;
 import com.qtz.base.util.XmlUtil;
+import com.qtz.commons.math.ArithUtil;
+import com.qtz.dm.user.utils.UserFiledsUtils;
 import com.qtz.goods.spi.dto.StoreGoods;
 import com.qtz.goods.spi.service.StoreGoodsService;
 import com.qtz.member.spi.coupon.dto.CouponUser;
@@ -58,7 +61,6 @@ import com.qtz.member.spi.user.model.UserKey;
 import com.qtz.member.spi.user.service.UserReceivingInfoService;
 import com.qtz.member.spi.user.service.UsersService;
 import com.qtz.member.spi.user.service.UsersShopService;
-import com.qtz.member.spi.user.utils.UserFiledsUtils;
 import com.qtz.member.spi.userwallet.dto.ReconciliationRecord;
 import com.qtz.member.spi.userwallet.enums.YesOrNoEnum;
 import com.qtz.member.spi.userwallet.enums.authenStatus;
@@ -80,17 +82,18 @@ import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
+import com.qtz.ppsh.order.service.vo.Alipay;
 import com.qtz.ppsh.order.service.vo.OrderKey;
 import com.qtz.ppsh.order.spi.dto.Order;
-import com.qtz.ppsh.order.spi.dto.OrderGoods;
-import com.qtz.ppsh.order.spi.dto.OrderLog;
-import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.dto.Order.OrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.OrderTypeEnum;
 import com.qtz.ppsh.order.spi.dto.Order.ReceivingStatus;
 import com.qtz.ppsh.order.spi.dto.Order.RefundStatus;
 import com.qtz.ppsh.order.spi.dto.Order.SellerOrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.TransactionStatus;
+import com.qtz.ppsh.order.spi.dto.OrderGoods;
+import com.qtz.ppsh.order.spi.dto.OrderLog;
+import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.page.OrderPage;
 import com.qtz.ppsh.order.spi.service.OrderGoodsService;
 import com.qtz.ppsh.order.spi.service.OrderLogService;
@@ -289,14 +292,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             orderGoods.setGoodsNum(goodsNum.intValue());// 商品单个数量
             goodsCount = goodsCount + goodsNum.intValue();
             orderGoods.setGoodsPrice(storeGoods.getPrice());// 商品单价
-            double totalPrice = Arith.mul(orderGoods.getGoodsNum(), orderGoods
+            double totalPrice = ArithUtil.mul(orderGoods.getGoodsNum(), orderGoods
                     .getGoodsPrice().doubleValue());
-            totalPrice = Arith.round(totalPrice, 2, BigDecimal.ROUND_HALF_UP);
+            totalPrice = ArithUtil.round(totalPrice, 2, BigDecimal.ROUND_HALF_UP);
             orderGoods.setGoodsTotalPrice(totalPrice);// 单个商品总价
             orderGoods.setGoodsId(storeGoods.getDmId());
             orderGoodsService.save(orderGoods);
 
-            orderPrice = Arith.add(orderPrice, totalPrice);
+            orderPrice = ArithUtil.add(orderPrice, totalPrice);
             if (sellerId == 0L) {
                 sellerId = storeGoods.getUserId().longValue();
             } else {
@@ -384,7 +387,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                         : sellerStore.getSendFee();
                 order.setSendFee(sellerStore.getSendFee());
             }
-            orderPrice = Arith.add(Arith.add(orderPrice, tempMealFee),
+            orderPrice = ArithUtil.add(ArithUtil.add(orderPrice, tempMealFee),
                     tempSendFee);
             order.setOrderPrice(orderPrice);
         }
@@ -456,7 +459,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             boolean flag = false;
             if (coupon.getType().intValue() == CouponType.archLord.value()) {
                 // 霸王卷
-                price = Arith.sub(order.getOrderPrice().doubleValue(), coupon
+                price = ArithUtil.sub(order.getOrderPrice().doubleValue(), coupon
                         .getCouponRules().getFavorableMoney().doubleValue());
                 price = price <= 0 ? 0 : price;
                 flag = true;
@@ -464,24 +467,24 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else if (coupon.getType().intValue() == CouponType.discount
                     .value()) {
                 // 折扣劵
-                double dis = Arith.div(coupon.getCouponRules()
+                double dis = ArithUtil.div(coupon.getCouponRules()
                         .getFavorableMoney().doubleValue(), 10.0);
-                price = Arith.mul(order.getOrderPrice().doubleValue(), dis);
+                price = ArithUtil.mul(order.getOrderPrice().doubleValue(), dis);
                 flag = true;
             } else if (coupon.getType().intValue() == CouponType.favorable
                     .value()) {
                 // 优惠卷
-                price = Arith.sub(order.getOrderPrice().doubleValue(), coupon
+                price = ArithUtil.sub(order.getOrderPrice().doubleValue(), coupon
                         .getCouponRules().getFavorableMoney().doubleValue());
                 flag = true;
             }
             if (flag) {
                 // 有优惠卷计算 需要计算优惠金额
-                price = Arith.round(price, 2, BigDecimal.ROUND_HALF_UP);
+                price = ArithUtil.round(price, 2, BigDecimal.ROUND_HALF_UP);
                 Order update = new Order();
                 update.setDmId(orderId);
                 update.setCouponId(couponId);
-                double couponPrice = Arith.sub(order.getOrderPrice(), price);
+                double couponPrice = ArithUtil.sub(order.getOrderPrice(), price);
                 update.setCouponPrice(couponPrice <= 0 ? 0 : couponPrice);
                 modVoNotNull(update);
             }
@@ -890,7 +893,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         //
         // Wallet updateSellerWallet=new Wallet();
         // updateSellerWallet.setDmId(sellerWallet.getDmId());
-        // updateSellerWallet.setMoney(Arith.add(updateSellerWallet.getMoney(),
+        // updateSellerWallet.setMoney(ArithUtil.add(updateSellerWallet.getMoney(),
         // order.getPaymentPrice()));
         // walletService.modVoNotNull(sellerWallet);
         //
@@ -1281,8 +1284,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         model.setOrderName("胖胖生活订单");
 //        model.setOrderType(PayOrderTypeEnum.ORDER);
         Double price = order.getPaymentPrice();
-        model.setYuanPrice(Arith.moneyFormat(price));
-        model.setFenPrice(String.valueOf(Arith.yuanToFen(price)));
+        model.setYuanPrice(ArithUtil.moneyFormat(price));
+        model.setFenPrice(String.valueOf(ArithUtil.yuanToFen(price)));
         model.setPayType(order.getPayType());
         model.setThirdSn(order.getThreeSerialNumber());
         model.setUserId(order.getUserId());
