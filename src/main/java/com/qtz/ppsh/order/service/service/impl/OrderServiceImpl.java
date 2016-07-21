@@ -467,7 +467,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else if (coupon.getType().intValue() == CouponType.discount
                     .value()) {
                 // 折扣劵
-                double dis = ArithUtil.div(coupon.getCouponRules()
+                double dis =ArithUtil.div(coupon.getCouponRules()
                         .getFavorableMoney().doubleValue(), 10.0);
                 price = ArithUtil.mul(order.getOrderPrice().doubleValue(), dis);
                 flag = true;
