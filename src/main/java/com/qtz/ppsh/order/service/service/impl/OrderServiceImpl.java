@@ -83,7 +83,7 @@ import com.qtz.ppsh.order.service.consts.MsgCode;
 import com.qtz.ppsh.order.service.consts.OrderKey;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
-import com.qtz.ppsh.order.service.vo.Alipay;
+import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.Order;
 import com.qtz.ppsh.order.spi.dto.Order.OrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.OrderTypeEnum;
