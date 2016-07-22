@@ -8,7 +8,7 @@
 
 <!-- Result Map com.qtz.dm.order.vo.Order-->
 
-<resultMap id="BaseResultMap" type="com.qtz.ppsh.order.service.vo.Order" >
+<resultMap id="BaseResultMap" type="com.qtz.ppsh.order.spi.dto.Order" >
 
 	 <result column="dmId"  property="dmId"/> 
 <result column="sellerId"  property="sellerId"/> 

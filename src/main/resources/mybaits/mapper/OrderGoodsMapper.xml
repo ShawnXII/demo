@@ -4,7 +4,7 @@
 <!-- 开启缓存 -->
 <cache eviction="FIFO" flushInterval="120000" size="1024" readOnly="true" />
 <!-- Result Map com.qtz.dm.order.vo.OrderGoods-->
-<resultMap id="BaseResultMap" type="com.qtz.ppsh.order.service.vo.OrderGoods" >
+<resultMap id="BaseResultMap" type="com.qtz.ppsh.order.spi.dto.OrderGoods" >
 	 <result column="dmId"  property="dmId"/> 
 <result column="orderId"  property="orderId"/> 
 <result column="goodsName"  property="goodsName"/> 
