@@ -39,6 +39,7 @@ import com.qtz.base.enums.Status;
 import com.qtz.base.exception.BaseDaoException;
 import com.qtz.base.exception.BaseServiceException;
 import com.qtz.base.exception.ExceptionCode;
+import com.qtz.base.response.RespCode;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.RespKey;
 import com.qtz.base.util.XmlUtil;
@@ -81,7 +82,6 @@ import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
-import com.qtz.ppsh.order.spi.consts.MsgCode;
 import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.Order;
 import com.qtz.ppsh.order.spi.dto.Order.OrderStatus;
@@ -682,11 +682,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             }
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", MsgCode.order_receiving);
+            extra.put("code", RespCode.order_receiving);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(MsgCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
+            this.jPushMessageService.sendMsg(RespCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
 
         } finally {
             lock.unlock();
@@ -760,11 +760,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", MsgCode.refuse_place_an_order);
+            extra.put("code", RespCode.refuse_place_an_order);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(MsgCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
+            this.jPushMessageService.sendMsg(RespCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
         } finally {
             lock.unlock();
         }
@@ -821,11 +821,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                     this.userWalletService.saveNoAccOrder(orderId + "", order.getUserId());
                     //发送极光消息
                     Map<String, String> extra = new HashMap<String, String>();
-                    extra.put("code", MsgCode.order_cancel);
+                    extra.put("code", RespCode.order_cancel);
                     MsgOutput ex = new MsgOutput();
                     ex.setId(orderId + "");
                     extra.put("data", JSONObject.toJSONString(ex));
-                    this.jPushMessageService.sendMsg(MsgCode.order_cancel, order.getUserId(), order.getSellerId(), extra);
+                    this.jPushMessageService.sendMsg(RespCode.order_cancel, order.getUserId(), order.getSellerId(), extra);
                     return;
                 } else {
                     throw new BaseServiceException(
@@ -947,12 +947,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", MsgCode.apply_for_refund);
+            extra.put("code", RespCode.apply_for_refund);
             //extra.put("message", cm.getMessage());
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(MsgCode.apply_for_refund, order.getUserId(), order.getSellerId(), extra);
+            this.jPushMessageService.sendMsg(RespCode.apply_for_refund, order.getUserId(), order.getSellerId(), extra);
         } finally {
             lock.unlock();
         }
@@ -1009,8 +1009,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 }
 
                 //自定义消息
-                extra.put("code", MsgCode.no_agree_to_refund);
-                jPushMessageService.sendMsg(MsgCode.no_agree_to_refund, order.getSellerId(), order.getUserId(), extra);
+                extra.put("code", RespCode.no_agree_to_refund);
+                jPushMessageService.sendMsg(RespCode.no_agree_to_refund, order.getSellerId(), order.getUserId(), extra);
             } else {
                 //检查订单是否还处理对账中，若存在可退款，若不存在不允许退款
                 if (records == null || records.size() == 0) {
@@ -1032,8 +1032,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 this.userWalletService.saveAccBackMoney(orderId + "", order.getUserId());
 
                 //自定义消息
-                extra.put("code", MsgCode.agree_to_refund);
-                jPushMessageService.sendMsg(MsgCode.agree_to_refund, order.getSellerId(), order.getUserId(), extra);
+                extra.put("code", RespCode.agree_to_refund);
+                jPushMessageService.sendMsg(RespCode.agree_to_refund, order.getSellerId(), order.getUserId(), extra);
             }
         } finally {
             lock.unlock();
@@ -1358,8 +1358,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 }
 
                 //自定义消息
-                extra.put("code", MsgCode.no_agree_to_refund);
-                jPushMessageService.sendMsg(MsgCode.no_agree_to_refund, order.getSellerId(), order.getUserId(), extra);
+                extra.put("code", RespCode.no_agree_to_refund);
+                jPushMessageService.sendMsg(RespCode.no_agree_to_refund, order.getSellerId(), order.getUserId(), extra);
             } else {
                 //检查订单是否还处理对账中，若存在可退款，若不存在不允许退款
                 if (records == null || records.size() == 0) {
@@ -1381,8 +1381,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 this.userWalletService.saveAccBackMoney(orderId + "", order.getUserId());
 
                 //自定义消息
-                extra.put("code", MsgCode.agree_to_refund);
-                jPushMessageService.sendMsg(MsgCode.agree_to_refund, order.getSellerId(), order.getUserId(), extra);
+                extra.put("code", RespCode.agree_to_refund);
+                jPushMessageService.sendMsg(RespCode.agree_to_refund, order.getSellerId(), order.getUserId(), extra);
             }
         } finally {
             lock.unlock();
@@ -1427,11 +1427,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             }
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", MsgCode.order_receiving);
+            extra.put("code", RespCode.order_receiving);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(MsgCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
+            this.jPushMessageService.sendMsg(RespCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
 
         } finally {
             lock.unlock();
@@ -1474,11 +1474,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             }
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", MsgCode.order_receiving);
+            extra.put("code", RespCode.order_receiving);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(MsgCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
+            this.jPushMessageService.sendMsg(RespCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
 
         } finally {
             lock.unlock();
@@ -1507,11 +1507,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
                 //发送极光消息
                 Map<String, String> extra = new HashMap<String, String>();
-                extra.put("code", MsgCode.refuse_place_an_order);
+                extra.put("code", RespCode.refuse_place_an_order);
                 MsgOutput ex = new MsgOutput();
                 ex.setId(orderId + "");
                 extra.put("data", JSONObject.toJSONString(ex));
-                this.jPushMessageService.sendMsg(MsgCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
+                this.jPushMessageService.sendMsg(RespCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
             } finally {
                 lock.unlock();
             }
