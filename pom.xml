@@ -18,13 +18,6 @@
 			<artifactId>qtz-ppsh-order-spi</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<!-- 调用海淘订单服务 start-->
-		<dependency>
-			<groupId>com.qtz.order</groupId>
-			<artifactId>qtz_order_service_api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<!-- 调用海淘订单服务 end-->
 		<dependency>
 			<groupId>com.qtz.member.spi</groupId>
 			<artifactId>qtz-member-spi</artifactId>

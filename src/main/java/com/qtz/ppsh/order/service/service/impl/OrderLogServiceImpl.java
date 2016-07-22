@@ -3,11 +3,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.qtz.base.common.log.LogTool;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.exception.BaseDaoException;
 import com.qtz.base.exception.BaseServiceException;
@@ -26,7 +26,7 @@ import com.qtz.ppsh.order.spi.service.OrderLogService;
 @Service("orderLogServiceImpl")
 public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implements OrderLogService  {
 	/**初始化日志对象*/
-	private static LogTool log = LogTool.getInstance(OrderLogServiceImpl.class);
+	private static Logger log = Logger.getLogger(OrderLogServiceImpl.class);
 	/**注入订单日志DAO接口类*/
 	@Resource(name="orderLogDaoImpl")
     private OrderLogDao dao;
@@ -38,14 +38,6 @@ public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implemen
 	@Override
 	protected BizDao<OrderLog,Long> getDao() {
 		return dao;
-	}
-	/** 
-	* 【取得】日志对象
-	* @return 	日志对象  
-	*/
-	@Override
-	protected LogTool getLog() {
-		return log;
 	}
 	
 	@Override
@@ -149,4 +141,6 @@ public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implemen
 		}
 		
 	}
+
+	
 }
