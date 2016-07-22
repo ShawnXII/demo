@@ -1,5 +1,6 @@
 package com.qtz.ppsh.order.service.vo;
 import java.io.Serializable;
+
 import com.qtz.base.dto.order.PayStatusEnum;
 import com.qtz.base.dto.order.PaymentMethodEnum;
 /**

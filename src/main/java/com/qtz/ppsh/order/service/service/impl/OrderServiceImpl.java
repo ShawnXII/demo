@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.qtz.base.common.Pager;
-import com.qtz.base.common.log.LogTool;
 import com.qtz.base.common.response.RespCode;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
@@ -127,7 +127,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     /**
      * 初始化日志对象
      */
-    private static LogTool log = LogTool.getInstance(OrderServiceImpl.class);
+    private static Logger log = Logger.getLogger(OrderServiceImpl.class);
 
     private static Lock lock = new ReentrantLock();// 锁对象
     /**
@@ -196,16 +196,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     @Override
     protected BizDao<Order, java.lang.Long> getDao() {
         return dao;
-    }
-
-    /**
-     * 【取得】日志对象
-     *
-     * @return 日志对象
-     */
-    @Override
-    protected LogTool getLog() {
-        return log;
     }
 
     /**

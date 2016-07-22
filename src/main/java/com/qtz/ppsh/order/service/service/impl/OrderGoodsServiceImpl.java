@@ -3,9 +3,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.qtz.base.common.log.LogTool;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.exception.BaseDaoException;
 import com.qtz.base.exception.BaseServiceException;
@@ -24,7 +24,7 @@ import com.qtz.ppsh.order.spi.service.OrderGoodsService;
 @Service("orderGoodsServiceImpl")
 public class OrderGoodsServiceImpl extends BaseServiceImpl<OrderGoods,Long> implements OrderGoodsService  {
 	/**初始化日志对象*/
-	private static LogTool log = LogTool.getInstance(OrderGoodsServiceImpl.class);
+	private static Logger log = Logger.getLogger(OrderGoodsServiceImpl.class);
 	/**注入订单对应商品DAO接口类*/
 	@Resource(name="orderGoodsDaoImpl")
     private OrderGoodsDao dao;
@@ -36,14 +36,6 @@ public class OrderGoodsServiceImpl extends BaseServiceImpl<OrderGoods,Long> impl
 	@Override
 	protected BizDao<OrderGoods,Long> getDao() {
 		return dao;
-	}
-	/** 
-	* 【取得】日志对象
-	* @return 	日志对象  
-	*/
-	@Override
-	protected LogTool getLog() {
-		return log;
 	}
 	@Override
 	public void delOrderGoodsByOrderId(Long orderid) throws BaseServiceException {
