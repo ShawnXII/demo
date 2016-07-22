@@ -20,7 +20,7 @@
 	<bean id="idGenerator" class="com.qtz.base.util.IdGenerator">
 		<constructor-arg index="0" value="${snowflake.workerid}" />
 	</bean>
-	<bean id="cfgHelper" class="com.qtz.base.util.CfgHelper"
+	<bean id="cfgHelper" class="com.qtz.commons.text.CfgHelper"
 		init-method="init">
 		<property name="locations">
 			<list>
