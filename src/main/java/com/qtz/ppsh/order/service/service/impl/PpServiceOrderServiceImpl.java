@@ -38,7 +38,7 @@ import com.qtz.payment.spi.service.YsPayService;
 import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
-import com.qtz.ppsh.order.spi.dto.Alipay;
+import com.qtz.ppsh.order.service.vo.Alipay;
 import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
 
