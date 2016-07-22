@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mall.core.common.response.RespCode;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.qtz.base.common.Pager;
-import com.qtz.base.common.response.RespCode;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
 import com.qtz.base.dto.order.PayOrderTypeEnum;
@@ -80,6 +80,7 @@ import com.qtz.payment.spi.service.YeePayService;
 import com.qtz.payment.spi.service.YsPayService;
 import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
+import com.qtz.ppsh.order.service.consts.MsgCode;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
 import com.qtz.ppsh.order.service.vo.Alipay;
@@ -682,7 +683,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             }
             //发送极光消息
             Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", RespCode.order_receiving);
+            extra.put("code", MsgCode.order_receiving);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
