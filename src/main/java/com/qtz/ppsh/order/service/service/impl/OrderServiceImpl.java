@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.qtz.base.common.Pager;
-import com.qtz.base.common.log.LogTool;
 import com.qtz.base.common.response.RespCode;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
@@ -44,7 +44,6 @@ import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.RespKey;
 import com.qtz.base.util.XmlUtil;
 import com.qtz.commons.math.ArithUtil;
-import com.qtz.dm.user.utils.UserFiledsUtils;
 import com.qtz.goods.spi.dto.StoreGoods;
 import com.qtz.goods.spi.service.StoreGoodsService;
 import com.qtz.member.spi.coupon.dto.CouponUser;
@@ -66,6 +65,7 @@ import com.qtz.member.spi.userwallet.enums.YesOrNoEnum;
 import com.qtz.member.spi.userwallet.enums.authenStatus;
 import com.qtz.member.spi.userwallet.service.ReconciliationRecordService;
 import com.qtz.member.spi.userwallet.service.UserWalletService;
+import com.qtz.member.spi.utils.UserFiledsUtils;
 import com.qtz.payment.spi.service.AlipayService;
 import com.qtz.payment.spi.service.CnPayService;
 import com.qtz.payment.spi.service.GhtPayService;
@@ -82,8 +82,7 @@ import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
-import com.qtz.ppsh.order.service.vo.Alipay;
-import com.qtz.ppsh.order.service.vo.OrderKey;
+import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.Order;
 import com.qtz.ppsh.order.spi.dto.Order.OrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.OrderTypeEnum;
@@ -92,6 +91,7 @@ import com.qtz.ppsh.order.spi.dto.Order.RefundStatus;
 import com.qtz.ppsh.order.spi.dto.Order.SellerOrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.TransactionStatus;
 import com.qtz.ppsh.order.spi.dto.OrderGoods;
+import com.qtz.ppsh.order.spi.dto.OrderKey;
 import com.qtz.ppsh.order.spi.dto.OrderLog;
 import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.page.OrderPage;
@@ -127,7 +127,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     /**
      * 初始化日志对象
      */
-    private static LogTool log = LogTool.getInstance(OrderServiceImpl.class);
+    private static Logger log = Logger.getLogger(OrderServiceImpl.class);
 
     private static Lock lock = new ReentrantLock();// 锁对象
     /**
@@ -196,16 +196,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     @Override
     protected BizDao<Order, java.lang.Long> getDao() {
         return dao;
-    }
-
-    /**
-     * 【取得】日志对象
-     *
-     * @return 日志对象
-     */
-    @Override
-    protected LogTool getLog() {
-        return log;
     }
 
     /**

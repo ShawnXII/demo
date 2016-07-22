@@ -2,10 +2,10 @@ package com.qtz.ppsh.order.service.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qtz.base.common.log.LogTool;
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
 import com.qtz.base.dto.order.PayOrderTypeEnum;
@@ -38,7 +38,7 @@ import com.qtz.payment.spi.service.YsPayService;
 import com.qtz.payment.spi.service.ZfPayService;
 import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
-import com.qtz.ppsh.order.service.vo.Alipay;
+import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
 
@@ -67,7 +67,7 @@ public class PpServiceOrderServiceImpl extends
     /**
      * 初始化日志对象
      */
-    private static LogTool log = LogTool.getInstance(PpServiceOrderServiceImpl.class);
+    private static Logger log = Logger.getLogger(PpServiceOrderServiceImpl.class);
     /**
      * 注入goodsDAO接口类
      */
@@ -115,16 +115,6 @@ public class PpServiceOrderServiceImpl extends
     @Override
     protected BizDao<PpServiceOrder, Long> getDao() {
         return dao;
-    }
-
-    /**
-     * 【取得】日志对象
-     *
-     * @return 日志对象
-     */
-    @Override
-    protected LogTool getLog() {
-        return log;
     }
 
     @Override
