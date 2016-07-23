@@ -62,7 +62,7 @@ import com.qtz.member.spi.user.service.UsersService;
 import com.qtz.member.spi.user.service.UsersShopService;
 import com.qtz.member.spi.userwallet.dto.ReconciliationRecord;
 import com.qtz.member.spi.userwallet.enums.YesOrNoEnum;
-import com.qtz.member.spi.userwallet.enums.authenStatus;
+import com.qtz.member.spi.userwallet.enums.AuthenStatus;
 import com.qtz.member.spi.userwallet.service.ReconciliationRecordService;
 import com.qtz.member.spi.userwallet.service.UserWalletService;
 import com.qtz.member.spi.utils.UserFiledsUtils;
@@ -231,11 +231,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         log.info("正在提交订单....");
         // if(makeEndTime==null && makeStartTime!=null || makeStartTime==null &&
         // makeEndTime!=null){
-        // throw new BaseServiceException("错误预约时间...");
+        // throw new ServiceException("错误预约时间...");
         // }
         if (makeTime == null) {
             makeTime = System.currentTimeMillis() + (30 * 60 * 1000);
-            // throw new BaseServiceException("错误预约时间");
+            // throw new ServiceException("错误预约时间");
         }
         if ((makeTime.longValue() + 5 * 60 * 1000) < System.currentTimeMillis()) {
             throw new ServiceException(ExceptionCode.ERROR_MAKETIME, "错误的预约时间");
@@ -384,7 +384,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         if (orderPrice >= 5000d) {
             throw new ServiceException(ExceptionCode.PRICE_ERROR, "单笔订单总金额需小于5000元");
         }
-        if (orderPrice >= 1000d && user.getAuthen() == authenStatus.NOAuth.value()) {
+        if (orderPrice >= 1000d && user.getAuthen() == AuthenStatus.NOAuth.value()) {
             throw new ServiceException(ExceptionCode.PRICE_ERROR, "1000元以上。请实名认证后再消费");
         }
         try {
@@ -838,7 +838,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             lock.unlock();
         }
         // if(order.getSellerOrderStatus()!=null){
-        // throw new BaseServiceException("服务器异常.");
+        // throw new ServiceException("服务器异常.");
         // }
 
     }
