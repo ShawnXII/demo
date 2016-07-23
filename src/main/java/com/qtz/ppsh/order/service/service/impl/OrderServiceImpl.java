@@ -231,11 +231,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         log.info("正在提交订单....");
         // if(makeEndTime==null && makeStartTime!=null || makeStartTime==null &&
         // makeEndTime!=null){
-        // throw new BaseServiceException("错误预约时间...");
+        // throw new ServiceException("错误预约时间...");
         // }
         if (makeTime == null) {
             makeTime = System.currentTimeMillis() + (30 * 60 * 1000);
-            // throw new BaseServiceException("错误预约时间");
+            // throw new ServiceException("错误预约时间");
         }
         if ((makeTime.longValue() + 5 * 60 * 1000) < System.currentTimeMillis()) {
             throw new ServiceException(ExceptionCode.ERROR_MAKETIME, "错误的预约时间");
@@ -838,7 +838,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             lock.unlock();
         }
         // if(order.getSellerOrderStatus()!=null){
-        // throw new BaseServiceException("服务器异常.");
+        // throw new ServiceException("服务器异常.");
         // }
 
     }
