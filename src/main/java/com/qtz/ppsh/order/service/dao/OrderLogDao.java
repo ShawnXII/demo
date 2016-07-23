@@ -2,7 +2,7 @@ package com.qtz.ppsh.order.service.dao;
 import java.util.List;
 
 import com.qtz.base.dao.BizDao;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 import com.qtz.ppsh.order.spi.dto.OrderLog;
 /**
  * <p>Title:OrderLogDao</p>
@@ -21,7 +21,7 @@ public interface OrderLogDao extends BizDao<OrderLog,Long> {
 	  * @author 涂鑫
 	  * @version
 	 */
-	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws BaseDaoException;
+	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws DaoException;
 	
 	/**
 	 * 
@@ -33,5 +33,5 @@ public interface OrderLogDao extends BizDao<OrderLog,Long> {
 	 * @author 聂恒
 	 * @version
 	 */
-	public List<OrderLog> findByOrderId(Long orderId)throws BaseDaoException;
+	public List<OrderLog> findByOrderId(Long orderId)throws DaoException;
 }

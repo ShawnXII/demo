@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.qtz.base.dao.impl.MyBaitsDaoImpl;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 import com.qtz.ppsh.order.service.dao.OrderLogDao;
 import com.qtz.ppsh.order.spi.dto.OrderLog;
 /**
@@ -28,7 +28,7 @@ public class OrderLogDaoImpl extends MyBaitsDaoImpl<OrderLog,Long> implements Or
 		return preName;
 	}
 	@Override
-	public List<OrderLog> findByOrderId(Long orderId) throws BaseDaoException {
+	public List<OrderLog> findByOrderId(Long orderId) throws DaoException {
 		OrderLog ol = new OrderLog();
 		ol.setOrderId(orderId);
 		List<OrderLog> olList = getMyBaitsTemplate().findList(getPreName(), "findByOrderId", ol);
@@ -36,9 +36,9 @@ public class OrderLogDaoImpl extends MyBaitsDaoImpl<OrderLog,Long> implements Or
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws BaseDaoException{
+	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws DaoException{
 		if(orderLog==null){
-			throw new BaseDaoException("null exception");
+			throw new DaoException("null exception");
 		}
 		getMyBaitsTemplate().mod(getPreName(), "updateOrderLogByOrderIdNotNull", orderLog);
 	}

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qtz.base.dao.BizDao;
-import com.qtz.base.exception.BaseDaoException;
-import com.qtz.base.exception.BaseServiceException;
+import com.qtz.base.exception.DaoException;
+import com.qtz.base.exception.ServiceException;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.ppsh.order.service.dao.OrderLogDao;
 import com.qtz.ppsh.order.spi.dto.OrderLog;
@@ -41,25 +41,25 @@ public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implemen
 	}
 	
 	@Override
-	public List<OrderLog> findByOrderId(Long orderId) throws BaseServiceException{
+	public List<OrderLog> findByOrderId(Long orderId) throws ServiceException{
 		try {
 			return dao.findByOrderId(orderId);
-		} catch (BaseDaoException e) {
-			throw new BaseServiceException(e);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
 		}
 	}
 	
 	@Override
-	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws BaseServiceException{
+	public void updateOrderLogByOrderIdNotNull(OrderLog orderLog) throws ServiceException{
 		try {
 			dao.updateOrderLogByOrderIdNotNull(orderLog);
-		} catch (BaseDaoException e) {
-			throw new BaseServiceException(e);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
 		}
 	}
 	
 	@Override
-	public JSONArray getOrderStatus(long orderId) throws BaseServiceException{
+	public JSONArray getOrderStatus(long orderId) throws ServiceException{
 		OrderLog where=new OrderLog();
 		where.setOrderId(orderId);
 		List<OrderLog> orderLogs = findList(where);
@@ -128,7 +128,7 @@ public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implemen
 		return jsonArray;
 	}
 	@Override
-	public void delOrderLogByOrderId(Long orderid) throws BaseServiceException {
+	public void delOrderLogByOrderId(Long orderid) throws ServiceException {
 		
 		OrderLog ogLog = new OrderLog();
 		
@@ -136,8 +136,8 @@ public class OrderLogServiceImpl extends BaseServiceImpl<OrderLog,Long> implemen
 		
 		try {
 			this.dao.delVo(ogLog);
-		} catch (BaseDaoException e) {
-			throw new BaseServiceException(e);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
 		}
 		
 	}

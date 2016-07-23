@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.qtz.base.dao.impl.MyBaitsDaoImpl;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 import com.qtz.base.util.Global;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.spi.dto.Order;
@@ -31,16 +31,16 @@ public class OrderDaoImpl extends MyBaitsDaoImpl<Order,Long> implements OrderDao
 		return preName;
 	}
 	@Override
-	public List<Order> queryTransactionClose(Map<String, Object> map) throws BaseDaoException{
+	public List<Order> queryTransactionClose(Map<String, Object> map) throws DaoException{
 		return getMyBaitsTemplate().findList(getPreName(), "queryTransactionClose", map);
 	}
 	@Override
-	public List<Order> findOrderClose(Long ctime) throws BaseDaoException {
+	public List<Order> findOrderClose(Long ctime) throws DaoException {
 		return getMyBaitsTemplate().findList(getPreName(), "queryCloseOrder", ctime);
 	}
 	@Override
 	public void updateCancelOrderCoupon(Long orderId, Double payPrice)
-			throws BaseDaoException {
+			throws DaoException {
 		Map<String, Object> parameter=new HashMap<String, Object>();
 		parameter.put("orderId", orderId);
 		parameter.put("payPrice", payPrice);
@@ -48,11 +48,11 @@ public class OrderDaoImpl extends MyBaitsDaoImpl<Order,Long> implements OrderDao
 	}
 	@Override
 	public List<Order> querySellerCummer(Map<String, Object> map)
-			throws BaseDaoException {
+			throws DaoException {
 		return getMyBaitsTemplate().findList(getPreName(), "querySellerCummer", map);
 	}
 	@Override
-	public List<Map<Object, Object>> queryCountOrderMonth(Long userId, String month,int pageIndex,int pageSize) throws BaseDaoException {
+	public List<Map<Object, Object>> queryCountOrderMonth(Long userId, String month,int pageIndex,int pageSize) throws DaoException {
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("userId", userId);
 		map.put("month", month);
@@ -61,18 +61,18 @@ public class OrderDaoImpl extends MyBaitsDaoImpl<Order,Long> implements OrderDao
 		return getMyBaitsTemplate().findList(getPreName(), "queryCountOrderMonth", map);
 	}
 	@Override
-	public Order getLockOrder(Long orderId) throws BaseDaoException {
+	public Order getLockOrder(Long orderId) throws DaoException {
 		Map<String, Object> parameter=new HashMap<String, Object>();
 		parameter.put("orderId", orderId);
 		return getMyBaitsTemplate().getSqlSession().selectOne(getPreName()+Global.SPLIT_DIAN+"getLockOrder", parameter);
 	}
 	@Override
-	public List<Order> queryTempOrder() throws BaseDaoException {
+	public List<Order> queryTempOrder() throws DaoException {
 		return getMyBaitsTemplate().getSqlSession().selectList(getPreName()+Global.SPLIT_DIAN+"queryTempOrder");
 	}
 	@Override
 	public List<Map<String, Object>> getOrdersToExport(Map<String, Object> param)
-			throws BaseDaoException {
+			throws DaoException {
 		return getMyBaitsTemplate().getSqlSession().selectList(getPreName()+Global.SPLIT_DIAN+"getOrdersToExport", param);
 	}
 }

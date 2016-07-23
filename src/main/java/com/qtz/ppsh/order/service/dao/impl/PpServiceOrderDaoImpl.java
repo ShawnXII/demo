@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.qtz.base.dao.impl.MyBaitsDaoImpl;
 import com.qtz.base.dto.order.PpServiceOrder;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
 /**
  * <p>Title:PpServiceOrderDaoImpl</p>
@@ -29,15 +29,15 @@ public class PpServiceOrderDaoImpl extends MyBaitsDaoImpl<PpServiceOrder,Long> i
 		return preName;
 	}
 	@Override
-	public int queryIsTrialPpStore(Long userId) throws BaseDaoException {
+	public int queryIsTrialPpStore(Long userId) throws DaoException {
 		Map<String, Object> parameter= new HashMap<String, Object>();
 		parameter.put("userId", userId);
 		return getMyBaitsTemplate().getSqlSession().selectOne(getPreName()+".queryIsTrialPpStore", parameter);
 	}
 	@Override
-	public PpServiceOrder getLockOrder(Long orderId) throws BaseDaoException {
+	public PpServiceOrder getLockOrder(Long orderId) throws DaoException {
 		if (orderId==null) {
-			throw new BaseDaoException("null exception");
+			throw new DaoException("null exception");
 		}
 		Map<String, Object> parameter= new HashMap<String, Object>();
 		parameter.put("orderId", orderId);

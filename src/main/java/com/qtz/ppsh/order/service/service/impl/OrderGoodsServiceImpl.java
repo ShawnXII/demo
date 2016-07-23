@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.qtz.base.dao.BizDao;
-import com.qtz.base.exception.BaseDaoException;
-import com.qtz.base.exception.BaseServiceException;
+import com.qtz.base.exception.DaoException;
+import com.qtz.base.exception.ServiceException;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.ppsh.order.service.dao.OrderGoodsDao;
 import com.qtz.ppsh.order.spi.dto.OrderGoods;
@@ -38,19 +38,19 @@ public class OrderGoodsServiceImpl extends BaseServiceImpl<OrderGoods,Long> impl
 		return dao;
 	}
 	@Override
-	public void delOrderGoodsByOrderId(Long orderid) throws BaseServiceException {
+	public void delOrderGoodsByOrderId(Long orderid) throws ServiceException {
 		// TODO Auto-generated method stub
 		OrderGoods og = new OrderGoods();
 		og.setOrderId(orderid);
 		try {
 			this.dao.delVo(og);
-		} catch (BaseDaoException e) {
-			throw new  BaseServiceException(e);
+		} catch (DaoException e) {
+			throw new  ServiceException(e);
 		}
 	}
 	@Override
 	public List<OrderGoods> getOrderGoodss(Long orderId)
-			throws BaseServiceException {
+			throws ServiceException {
 		OrderGoods where=new OrderGoods();
 		where.setOrderId(orderId);
 		List<OrderGoods> findList = findList(where);

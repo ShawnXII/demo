@@ -2,7 +2,7 @@ package com.qtz.ppsh.order.service.dao;
 
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PpServiceOrder;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 
 /**
  * <p>
@@ -28,22 +28,22 @@ public interface PpServiceOrderDao extends
 	  * 【查询用户曾经是否试用过店铺产品 >0 则试用过】
 	  * @param userId
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2016年1月6日 上午9:57:18
 	  * @author 涂鑫
 	  * @version
 	 */
-	int queryIsTrialPpStore(Long userId) throws BaseDaoException;
+	int queryIsTrialPpStore(Long userId) throws DaoException;
 	/**
 	 * 
 	  * 【获取订单 有行锁】
 	  * @param orderId
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2016年1月28日 下午1:23:06
 	  * @author 涂鑫
 	  * @version
 	 */
-	PpServiceOrder getLockOrder(Long orderId) throws BaseDaoException;
+	PpServiceOrder getLockOrder(Long orderId) throws DaoException;
 
 }

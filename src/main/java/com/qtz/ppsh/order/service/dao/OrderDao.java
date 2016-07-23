@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.qtz.base.dao.BizDao;
-import com.qtz.base.exception.BaseDaoException;
+import com.qtz.base.exception.DaoException;
 import com.qtz.ppsh.order.spi.dto.Order;
 /**
  * <p>Title:OrderDao</p>
@@ -20,9 +20,9 @@ public interface OrderDao extends BizDao<Order,Long> {
 	* 【查询商家的客户】(这里用一句话描述这个方法的作用)
 	* @param map
 	* @return
-	* @throws BaseDaoException
+	* @throws DaoException
 	 */
-	List<Order> querySellerCummer(Map<String,Object> map)throws BaseDaoException;
+	List<Order> querySellerCummer(Map<String,Object> map)throws DaoException;
 	/**
 	 * 
 	  * 【查询交易关闭订单】
@@ -32,30 +32,30 @@ public interface OrderDao extends BizDao<Order,Long> {
 	  * @author 涂鑫
 	  * @version
 	 */
-	List<Order> queryTransactionClose(Map<String, Object> map)throws BaseDaoException;
+	List<Order> queryTransactionClose(Map<String, Object> map)throws DaoException;
 	/**
 	 * 
 	  * 【查询可用关闭的订单】
 	  * @param ctime
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2015年9月30日 下午11:35:33
 	  * @author 涂鑫
 	  * @version
 	 */
-	List<Order> findOrderClose(Long ctime) throws BaseDaoException;
+	List<Order> findOrderClose(Long ctime) throws DaoException;
 	/**
 	 * 
 	  * 【取消订单优惠劵】
 	  * @param orderId				订单id
 	  * @param payPrice				更新支付金额
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2015年10月8日 下午5:47:32
 	  * @author 涂鑫
 	  * @version
 	 */
 	@Deprecated
-	void updateCancelOrderCoupon(Long orderId,Double payPrice)throws BaseDaoException;
+	void updateCancelOrderCoupon(Long orderId,Double payPrice)throws DaoException;
 	
 	/**
 	 * 
@@ -64,35 +64,35 @@ public interface OrderDao extends BizDao<Order,Long> {
 	  * @param month
 	  * @param pageIndex
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2015年12月31日 下午1:05:21
 	  * @author 涂鑫
 	  * @version
 	 */
-	public List<Map<Object, Object>> queryCountOrderMonth(Long userId, String month,int pageIndex,int pageSize) throws BaseDaoException;
+	public List<Map<Object, Object>> queryCountOrderMonth(Long userId, String month,int pageIndex,int pageSize) throws DaoException;
 	
 	/**
 	 * 
 	  * 【获取订单  有数据库悲观锁】
 	  * @param orderId
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2016年1月22日 下午3:51:52
 	  * @author 涂鑫
 	  * @version
 	 */
-	public Order getLockOrder(Long orderId)throws BaseDaoException;
+	public Order getLockOrder(Long orderId)throws DaoException;
 	
 	/**
 	 * 
 	  * 【查询过年期间25号下单订单】
 	  * @return
-	  * @throws BaseDaoException  
+	  * @throws DaoException  
 	  * @time:2016年1月30日 下午5:53:32
 	  * @author 涂鑫
 	  * @version
 	 */
-	public List<Order> queryTempOrder()throws BaseDaoException;
+	public List<Order> queryTempOrder()throws DaoException;
 	
 	/**
 	 * 获取时间段内的订单
@@ -100,7 +100,7 @@ public interface OrderDao extends BizDao<Order,Long> {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public List<Map<String, Object>> getOrdersToExport(Map<String, Object> param) throws BaseDaoException;
+	public List<Map<String, Object>> getOrdersToExport(Map<String, Object> param) throws DaoException;
 
 	
 }
