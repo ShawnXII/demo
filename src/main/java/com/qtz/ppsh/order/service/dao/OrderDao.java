@@ -101,6 +101,17 @@ public interface OrderDao extends BizDao<Order,Long> {
 	 * @throws ServiceException
 	 */
 	public List<Map<String, Object>> getOrdersToExport(Map<String, Object> param) throws DaoException;
+	
+	
+	/**
+	  * 【查询订单总数】
+	  * @param vo
+	  * @return
+	  * @throws DaoException Long
+	  * @time: 2016年6月21日下午7:27:00
+	  * @author 张玉兵
+	 */
+	public Integer findOrderCount(Order vo)throws DaoException;
 
 	
 }

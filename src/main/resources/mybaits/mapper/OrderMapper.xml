@@ -503,4 +503,35 @@ WHERE
 AND	t.crtime BETWEEN #{beginTime}
 AND #{endTime}
 </select>
+
+
+<sql id="order_Where_Clause">
+
+<where>
+	<if test="sellerId != null  ">
+		 and t.sellerId=#{sellerId}
+	</if>
+	<if test="userId != null  ">
+		 and t.userId=#{userId}
+	</if>
+	<if test="orderType != null  ">
+		 and t.orderType=#{orderType}
+	</if>
+	<if test="orderStatus != null  ">
+		 and t.orderStatus=#{orderStatus}
+	</if>
+	<if test="orderType == null and orderStatus == null">
+		and t.orderStatus in (0,6)
+	</if>
+
+
+
+</where>
+
+</sql>
+<select id="findOrderCount" resultType ="java.lang.Integer"  parameterType="Object">
+	select count(1) from `order` t 
+   <include refid="order_Where_Clause"/>
+</select>
+
 </mapper>

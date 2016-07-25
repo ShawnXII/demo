@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -27,9 +27,6 @@ import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
 import com.qtz.base.dto.order.PayOrderTypeEnum;
 import com.qtz.base.dto.order.PayStatusEnum;
-import com.qtz.base.dto.order.PaymentMethodEnum;
-import com.qtz.base.dto.order.StoreGoods.GoodsStatus;
-import com.qtz.base.dto.order.StoreGoods.IsCoupon;
 import com.qtz.base.dto.user.Coupon;
 import com.qtz.base.dto.user.Coupon.CouponType;
 import com.qtz.base.dto.user.CouponRules;
@@ -37,14 +34,15 @@ import com.qtz.base.dto.user.User;
 import com.qtz.base.dto.user.UserType;
 import com.qtz.base.enums.Status;
 import com.qtz.base.exception.DaoException;
-import com.qtz.base.exception.ServiceException;
 import com.qtz.base.exception.ExceptionCode;
+import com.qtz.base.exception.ServiceException;
 import com.qtz.base.response.RespCode;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.RespKey;
-import com.qtz.base.util.XmlUtil;
 import com.qtz.commons.math.ArithUtil;
 import com.qtz.goods.spi.dto.StoreGoods;
+import com.qtz.goods.spi.dto.StoreGoods.GoodsStatus;
+import com.qtz.goods.spi.dto.StoreGoods.IsCoupon;
 import com.qtz.goods.spi.service.StoreGoodsService;
 import com.qtz.member.spi.coupon.dto.CouponUser;
 import com.qtz.member.spi.coupon.model.CouponKey;
@@ -62,27 +60,11 @@ import com.qtz.member.spi.user.service.UsersService;
 import com.qtz.member.spi.user.service.UsersShopService;
 import com.qtz.member.spi.userwallet.dto.ReconciliationRecord;
 import com.qtz.member.spi.userwallet.enums.YesOrNoEnum;
-import com.qtz.member.spi.userwallet.enums.AuthenStatus;
 import com.qtz.member.spi.userwallet.service.ReconciliationRecordService;
 import com.qtz.member.spi.userwallet.service.UserWalletService;
 import com.qtz.member.spi.utils.UserFiledsUtils;
-import com.qtz.payment.spi.service.AlipayService;
-import com.qtz.payment.spi.service.CnPayService;
-import com.qtz.payment.spi.service.GhtPayService;
-import com.qtz.payment.spi.service.JdPayService;
-import com.qtz.payment.spi.service.LakalaPayService;
-import com.qtz.payment.spi.service.LlPayService;
-import com.qtz.payment.spi.service.MbPayService;
-import com.qtz.payment.spi.service.MsPayService;
-import com.qtz.payment.spi.service.PAPayService;
-import com.qtz.payment.spi.service.PaymentService;
-import com.qtz.payment.spi.service.YeePayService;
-import com.qtz.payment.spi.service.YsPayService;
-import com.qtz.payment.spi.service.ZfPayService;
-import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.OrderDao;
 import com.qtz.ppsh.order.service.util.OrderIdFactory;
-import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.Order;
 import com.qtz.ppsh.order.spi.dto.Order.OrderStatus;
 import com.qtz.ppsh.order.spi.dto.Order.OrderTypeEnum;
@@ -101,8 +83,7 @@ import com.qtz.ppsh.order.spi.service.OrderService;
 import com.qtz.system.spi.jpush.model.MsgOutput;
 import com.qtz.system.spi.jpush.service.JPushMessageService;
 
-
-
+//import com.qtz.dm.pay.service.UnionpayService;
 
 /**
  * <p>
@@ -127,7 +108,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     /**
      * 初始化日志对象
      */
-    private static Logger log = Logger.getLogger(OrderServiceImpl.class);
+	private static Logger log = Logger.getLogger(OrderServiceImpl.class);
 
     private static Lock lock = new ReentrantLock();// 锁对象
     /**
@@ -136,58 +117,43 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
     @Resource(name = "orderDaoImpl")
     private OrderDao dao;
+
     @Autowired
     private OrderGoodsService orderGoodsService;
+
     @Autowired
     private StoreGoodsService storeGoodsService;
+
     @Autowired
     private CouponService couponService;
+
     @Autowired
     private CouponUserService couponUserService;
+
     @Autowired
     private UserReceivingInfoService receivingInfoService;
+
     @Autowired
     private OrderLogService orderLogService;
+    
     @Autowired
     private UsersService usersService;
+
     @Autowired
     private UsersShopService usersShopService;
+
     @Autowired
     private SellerStoreService sellerStoreService;
+
     @Autowired
     private UserWalletService userWalletService;
-    @Autowired
-    private PaymentService paymentService;
-    @Autowired
-    private AlipayService alipayService;
-    @Autowired
-    private JdPayService jdPayService;
-    @Autowired
-    private YsPayService ysPayService;
-    @Autowired
-    private PAPayService paPayService;
-    @Autowired
-    private YeePayService yeePayService;
-    @Autowired
-    private ZfPayService zfPayService;
-    @Autowired
-    private LakalaPayService lakalaPayService;
-    @Autowired
-    private CnPayService cnPayService;
+
     @Autowired
     private JPushMessageService jPushMessageService;
+
     @Autowired
     private ReconciliationRecordService reconciliationRecordService;
-    @Autowired
-    private MbPayService mbPayService;
-    @Autowired
-    private GhtPayService ghtPayService;
-    @Autowired
-    private MsPayService msPayService;
-    @Autowired
-    private ZxPayService zxPayService;
-    @Autowired
-    private LlPayService llPayService;
+   
     /**
      * 【取得】业务DAO对象
      *
@@ -197,6 +163,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     protected BizDao<Order, java.lang.Long> getDao() {
         return dao;
     }
+
+
 
     /**
      * 【互斥锁】
@@ -225,6 +193,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     /**
      * 提交订单
      */
+    @Override
     public Long saveSubOrder(Map<Long, Integer> goodsMaps, Long receivingId,
                              Long couponId, User user, Integer orderType, Long makeTime,
                              String note) throws ServiceException {
@@ -384,15 +353,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         if (orderPrice >= 5000d) {
             throw new ServiceException(ExceptionCode.PRICE_ERROR, "单笔订单总金额需小于5000元");
         }
-        if (orderPrice >= 1000d && user.getAuthen() == AuthenStatus.NOAuth.value()) {
+        /*if (orderPrice >= 1000d && user.getAuthen() == User.authenStatus.NOAuth.value()) {
             throw new ServiceException(ExceptionCode.PRICE_ERROR, "1000元以上。请实名认证后再消费");
-        }
+        }新认证已经成功上线，不需要这个判断了*/
+        
         try {
             getDao().addVo(order);
         } catch (DaoException e) {
             throw new ServiceException("添加错误", e);
         }
-        log.info("正在记录订单日志...");
         OrderLog save = new OrderLog();
         save.setOrderId(orderId);
         save.setStatus(PayStatusEnum.PAY_FAILURE.getId());// 初始订单日志未支付
@@ -405,9 +374,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     }
 
     private Long getOrderId(Long orderId) throws ServiceException {
-        if (findVo(orderId, null) != null) {
-        	 getOrderId(Long.parseLong(OrderPrefix.PP_USER_ORDER + String.valueOf(OrderIdFactory.getOrderId().longValue())));
+    	if (findVo(orderId, null) != null) {
+            getOrderId(OrderIdFactory.getOrderId().longValue());
         }
+    	orderId = Long.parseLong(OrderPrefix.PP_USER_ORDER + String.valueOf(orderId));
         return orderId;
     }
 
@@ -457,7 +427,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else if (coupon.getType().intValue() == CouponType.discount
                     .value()) {
                 // 折扣劵
-                double dis =ArithUtil.div(coupon.getCouponRules()
+                double dis = ArithUtil.div(coupon.getCouponRules()
                         .getFavorableMoney().doubleValue(), 10.0);
                 price = ArithUtil.mul(order.getOrderPrice().doubleValue(), dis);
                 flag = true;
@@ -482,8 +452,89 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         Order update = new Order();
         update.setDmId(orderId);
         update.setPaymentPrice(price);
+        log.error("订单实际支付价格 ："+price+update.getPaymentPrice());
         modVoNotNull(update);
         return price;
+    }
+    
+    @Override
+    public Order newCalculatePaymentPrice(Long orderId, Long couponId,Long userId) throws ServiceException {        
+        if (orderId == null || userId == null) {
+            throw new ServiceException(ExceptionCode.NULL_EXCEPTION,"null exception");
+        }
+        Order order = findVo(orderId, null);
+        if (order.getOrderStatus() != OrderStatus.unpay.getId()) {
+            throw new ServiceException(ExceptionCode.ORDER_PAY_ERROR,"订单支付状态错误");
+        }
+        Double price = null;
+        boolean flag = false;
+        if (couponId == null) {
+        	price = order.getOrderPrice();
+            //如果订单生成的时候本来就没有优惠券信息，这里就不需要更改
+        	if(null != order.getCouponId()){
+        		order.setCouponId(null);
+        	}
+            if(null != order.getCouponPrice()){
+            	order.setCouponPrice(0D);
+            }
+            updateCancelCouponPay(orderId, null, userId);// 取消优惠卷计算
+        } else {
+            CouponUser where = new CouponUser();
+            where.setCouponId(couponId);
+            where.setUserId(userId);
+            List<CouponUser> findList = couponUserService.findList(where);
+            if (findList == null || findList.isEmpty()) {
+                throw new ServiceException(ExceptionCode.USER_NO_SUCH_COUPON,
+                        "用户无此优惠卷");
+            }
+            Coupon coupon = new Coupon();
+            coupon = couponService.findVo(couponId, coupon);
+
+            if (coupon.getCouponRules().getMonetary() != null
+                    && coupon.getCouponRules().getMonetary().doubleValue() > order
+                    .getOrderPrice().doubleValue()) {
+                throw new ServiceException(
+                        ExceptionCode.COUPON_NOT_TO_USE_RULES, "优惠卷未达到使用规则");
+            }
+            
+            if (coupon.getType().intValue() == CouponType.archLord.value()) {
+                // 霸王卷
+                price = ArithUtil.sub(order.getOrderPrice().doubleValue(), coupon
+                        .getCouponRules().getFavorableMoney().doubleValue());
+                price = price <= 0 ? 0 : price;
+                flag = true;
+            } else if (coupon.getType().intValue() == CouponType.discount
+                    .value()) {
+                // 折扣劵
+                double dis = ArithUtil.div(coupon.getCouponRules()
+                        .getFavorableMoney().doubleValue(), 10.0);
+                price = ArithUtil.mul(order.getOrderPrice().doubleValue(), dis);
+                flag = true;
+            } else if (coupon.getType().intValue() == CouponType.favorable
+                    .value()) {
+                // 优惠卷
+                price = ArithUtil.sub(order.getOrderPrice().doubleValue(), coupon
+                        .getCouponRules().getFavorableMoney().doubleValue());
+                flag = true;
+            }
+        }
+        
+        if (flag) {        	
+            // 有优惠卷计算 需要计算优惠金额
+            price = ArithUtil.round(price, 2, BigDecimal.ROUND_HALF_UP);           
+            double couponPrice = ArithUtil.sub(order.getOrderPrice(), price);
+            order.setCouponPrice(couponPrice <= 0 ? 0 : couponPrice);
+            order.setCouponId(couponId);
+        }
+        //修改订单的优惠券、优惠价格、实际支付金额
+        order.setPreferentialPrice(price);
+        order.setPaymentPrice(price);
+        //每次都先重置这三个字段
+        order.setTags("");
+        order.setDeductionPrice(0d);
+        order.setDiscountPercentByNow(0);
+        modVoNotNull(order);        
+        return order;
     }
 
     @Override
@@ -620,9 +671,17 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else {
                 page.setSellerId(userId);
             }
+
 //            if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
+
+            page.setOrderType(orderType);
+            /*if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
+>>>>>>> branch 'dev-1.0.0' of git@gitlab.qtz.com:java/qtz-ppsh-order-service.git
             	 page.setOrderType(orderType);
+<<<<<<< HEAD
 //            }
+=======
+            }*/
             page.setNowPage(pageIndex);
             page.setOrderField(OrderKey.crtime);
             page.setOrderDirection(false);
@@ -693,6 +752,65 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         }
 
     }
+    
+    @Transactional
+    @Override
+    public void newReceivingOrder(Long orderId, Long sellerId) throws ServiceException {
+    	Order order = null;
+        try {
+            order = checkOrder(orderId, sellerId);
+            if (order.getOrderStatus().intValue() != Order.OrderStatus.pay_dont_answer_sheet.getId()) {
+                throw new ServiceException(ExceptionCode.SELLER_RECEIVING_ORDER_STATUS_ERROR, "订单状态不正确");
+            }
+            Order orderUpdate = new Order();
+            orderUpdate.setDmId(orderId);
+            orderUpdate.setSellerOrderStatus(SellerOrderStatus.havaOrder.value());
+            orderUpdate.setReceivingStatus(ReceivingStatus.notSpending.value());
+            orderUpdate.setOrderStatus(OrderStatus.reorder.getId());
+            modVoNotNull(orderUpdate);
+            OrderLog updateOrderLog = new OrderLog();
+            updateOrderLog.setOrderId(orderId);
+            updateOrderLog.setTime(System.currentTimeMillis());
+            updateOrderLog.setStatus(OrderStatus.reorder.getId());
+            orderLogService.save(updateOrderLog);
+            //找到当前订单商家的二级分类
+ 			SellerStore sstore = sellerStoreService.getSellerStore(order.getSellerId());
+ 			if (null == sstore) {
+ 				throw new ServiceException(ExceptionCode.NULL_EXCEPTION, "店铺不存在,商家ID：" + order.getSellerId());
+ 			}else if(null == sstore.getTwoCategoryId()){
+ 				throw new ServiceException(ExceptionCode.NULL_EXCEPTION, "店铺的二级标签不存在,商家ID：" + order.getSellerId());
+ 			}
+ 			//////////////为了避免订单的preferentialPrice为0，这里重新计算一遍//////////////////
+ 			
+			if(null != order.getCouponId() && null != order.getCouponPrice() && order.getCouponPrice().longValue()>0){
+				order.setPreferentialPrice(ArithUtil.sub(order.getOrderPrice(),order.getCouponPrice()));  //订单总金额  - 优惠券金额
+			}else{
+				order.setPreferentialPrice(order.getOrderPrice());
+			}
+ 			
+ 			
+ 			///////////////////////////////
+            // 钱包划账
+            if (System.currentTimeMillis() > order.getMakeTime().longValue()) {
+                // 预约时间小于当前时间，则用当前时间 userWalletService
+                this.userWalletService.newAccectOrder(orderId + "",order.getOrderPrice(),order.getPreferentialPrice(),order.getPaymentPrice(), order.getSellerId(),
+                        order.getUserId(), System.currentTimeMillis(), order.getPayType().intValue(),sstore.getTwoCategoryId());
+            } else {
+                this.userWalletService.newAccectOrder(orderId + "",order.getOrderPrice(),order.getPreferentialPrice(),order.getPaymentPrice(), order.getSellerId(),
+                        order.getUserId(), order.getMakeTime(), order.getPayType().intValue(),sstore.getTwoCategoryId());
+            }
+            //发送极光消息
+            Map<String, String> extra = new HashMap<String, String>();
+            extra.put("code", RespCode.order_receiving);
+            MsgOutput ex = new MsgOutput();
+            ex.setId(orderId + "");
+            extra.put("data", JSONObject.toJSONString(ex));
+            this.jPushMessageService.sendMsg(RespCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
+
+        } finally {
+            lock.unlock();
+        }
+    }    
 
     private Order checkOrder(Long orderId, Long sellerId)
             throws ServiceException {
@@ -883,7 +1001,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         //
         // Wallet updateSellerWallet=new Wallet();
         // updateSellerWallet.setDmId(sellerWallet.getDmId());
-        // updateSellerWallet.setMoney(ArithUtil.add(updateSellerWallet.getMoney(),
+        // updateSellerWallet.setMoney(Arith.add(updateSellerWallet.getMoney(),
         // order.getPaymentPrice()));
         // walletService.modVoNotNull(sellerWallet);
         //
@@ -919,8 +1037,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             //检查订单是否还处理对账中，若存在可退款，若不存在不允许退款
             ReconciliationRecord record = new ReconciliationRecord();
             record.setSaleOrdersId(orderId.toString());
+            record.setUserType(UserType.BUSINESS.value());
             List<ReconciliationRecord> records = reconciliationRecordService.findList(record);
-            if (records == null || records.size() == 0) {
+            Integer count = reconciliationRecordService.orderIsFrozen(orderId);
+            if (count > 0) {
                 log.debug("订单已完成，不能退款");
                 throw new ServiceException(ExceptionCode.ORDERFINISHED_REJECTREIM, "订单已完成，不能退款");
             }
@@ -981,8 +1101,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
             ReconciliationRecord record = new ReconciliationRecord();
             record.setSaleOrdersId(orderId.toString());
+            //record.setUserType(com.qtz.dm.user.vo.User.UserType.Business.value());
+            
             List<ReconciliationRecord> records = reconciliationRecordService.findList(record);
-
+            
             Map<String, String> extra = new HashMap<String, String>();
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
@@ -1013,7 +1135,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 jPushMessageService.sendMsg(RespCode.no_agree_to_refund, order.getSellerId(), order.getUserId(), extra);
             } else {
                 //检查订单是否还处理对账中，若存在可退款，若不存在不允许退款
-                if (records == null || records.size() == 0) {
+            	Integer count = reconciliationRecordService.orderIsFrozen(orderId);
+                if (count > 0) {
                     log.debug("订单已完成，不能退款");
                     throw new ServiceException(ExceptionCode.ORDERFINISHED_REJECTREIM, "订单已完成，不能退款");
                 }
@@ -1054,151 +1177,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     @Override
     public boolean queryOrderPaymentStatus(Long orderId, Integer paymentType,
                                            Integer resultDeal) throws ServiceException {
-        boolean isPay = false;
-        Order order = findVo(orderId, null);
-        if (order == null) {
-            throw new ServiceException(ExceptionCode.ORDER_INEXISTENCE, "订单不存在");
-        }
-        try {
-            // 如果是未支付则去查询
-            log.debug("订单支付状态" + order.getPayStatus());
-            if (null != order.getPayType() && (-1 == paymentType || 13 == paymentType)) {
-                paymentType = order.getPayType();
-            }
-            if(2 == paymentType){paymentType = 24;}
-            if (order.getPayStatus() == PayStatusEnum.PAY_FAILURE.getId()) {
-                if (paymentType == PaymentMethodEnum.ALIPAY.getValue()) {
-                    log.debug("主动查询支付宝支付结果");
-                    String respXML = alipayService.query(orderId);
-                    Alipay alipayQueryXml = XmlUtil.XMLBean(respXML,Alipay.class);
-                    log.debug("查询支付宝支付数据" + alipayQueryXml.toString());
-                    if (alipayQueryXml.getIsSuccess().equals("T")) {
-                        String trade_status = alipayQueryXml.getResponse().getRrade().getTrade_status();// 交易状态
-                        if (trade_status.equals("TRADE_SUCCESS")) {
-                            log.debug("查询支付宝交易状态成功支付");
-                            isPay = true;
-                            switch (resultDeal) {
-                                case 1:
-                                    paymentService.updateDealPayResult(
-                                            Long.valueOf(alipayQueryXml
-                                                    .getResponse().getRrade()
-                                                    .getOut_trade_no()),
-                                            alipayQueryXml.getResponse().getRrade()
-                                                    .getTrade_no(),
-                                            Double.parseDouble(alipayQueryXml
-                                                    .getResponse().getRrade()
-                                                    .getPrice()),
-                                            PaymentMethodEnum.ALIPAY.getValue());
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                        } else {
-                            throw new ServiceException(-100137, "订单未支付");
-                        }
-                    }
-                } else if (paymentType == PaymentMethodEnum.WEIXIN.getValue()) {
-                    log.debug("主动查询微信支付结果.");
-                } else if (paymentType == PaymentMethodEnum.JDPAY.getValue()) {
-                    String status = jdPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("2".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.YSPAY.getValue()) {
-                    String status = ysPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("0".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.PAPAY.getValue()) {
-                    String status = paPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("01".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.YEEPAY.getValue()) {
-                    String status = yeePayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.ZFPAY.getValue()) {
-                    String status = zfPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("00".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.LKLPAY.getValue()) {
-                    String status = lakalaPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.CNPAY.getValue()) {
-                    String status = cnPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单处理中,请稍候");
-                    }
-                } else if (paymentType == PaymentMethodEnum.MBPAY.getValue()) {
-                    String status = mbPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER, PaymentMethodEnum.MBPAY.getValue());
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.MBPAY2.getValue()) {
-                    String status = mbPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER, PaymentMethodEnum.MBPAY2.getValue());
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.GHTPAY.getValue()) {
-                    String status = ghtPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.FASTPAY.getValue()) {
-                    isPay = false;
-                    throw new ServiceException(-100137, "订单处理中,请稍候");
-                }else if(paymentType == PaymentMethodEnum.MSPAY.getValue()){
-                	String status = msPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                }else if(paymentType == PaymentMethodEnum.ZXPAY.getValue()){
-                	String status = zxPayService.queryOrder(orderId, PayOrderTypeEnum.ORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "处理中");
-                    }
-                }else if(paymentType == PaymentMethodEnum.LLPAY.getValue()){
-                    if (llPayService.queryOrder(orderId)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "处理中");
-                    }
-                }
-            }
-            return isPay;
-        } catch (Exception e) {
-            throw new ServiceException(e);
-        }
+        throw new ServiceException(-100137, "处理中,请稍候");//该接口后续再处理
     }
 
     @Override
@@ -1272,7 +1251,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         model.setOrderId(String.valueOf(orderId));
         model.setTime(order.getCrtime());
         model.setOrderName("胖胖生活订单");
-//        model.setOrderType(PayOrderTypeEnum.ORDER);
+        model.setOrderType(PayOrderTypeEnum.ORDER);
         Double price = order.getPaymentPrice();
         model.setYuanPrice(ArithUtil.moneyFormat(price));
         model.setFenPrice(String.valueOf(ArithUtil.yuanToFen(price)));
@@ -1290,21 +1269,21 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Override
-    public void receviceOrder(Long orderId, Integer isAccept,Long sellerId)
-            throws ServiceException {
-        if(Order.IsAccept.yes.value() == isAccept){
-            this.acceptReceiveOrder(orderId, sellerId);
-        }
-        else if(Order.IsAccept.no.value() == isAccept){
-            this.refuseReceiveOrder(orderId, sellerId);
-        }
-        
-    }
+	public void receviceOrder(Long orderId, Integer isAccept,Long sellerId)
+			throws ServiceException {
+		if(Order.IsAccept.yes.value() == isAccept){
+			this.acceptReceiveOrder(orderId, sellerId);
+		}
+		else if(Order.IsAccept.no.value() == isAccept){
+			this.refuseReceiveOrder(orderId, sellerId);
+		}
+		
+	}
 	
 	@Override
-    public void applyRefund(Long orderId,Integer isAccept,
-            Long sellerId,String message) throws ServiceException {
-        try {
+	public void applyRefund(Long orderId,Integer isAccept,
+			Long sellerId,String message) throws ServiceException {
+		try {
             Order order = lockOrder(orderId.longValue());
             if (order == null) {
                 log.debug("订单不存在");
@@ -1332,11 +1311,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             extra.put("data", JSONObject.toJSONString(ex));
             //是否同意退款
             if (Order.IsAccept.no.value() == isAccept) {
-                int orderStatus = 0;
+            	int orderStatus = 0;
 //                if(Order.OrderTypeEnum.takeOut.value() == orderType){
-                orderStatus = OrderStatus.reorder.getId();          //配送中
+                orderStatus = OrderStatus.reorder.getId();			//配送中
 //                }else if(Order.OrderTypeEnum.eatIn.value() == orderType){
-//                  orderStatus = OrderStatus.reorder.getId();          //待消费
+//                	orderStatus = OrderStatus.reorder.getId();          //待消费
 //                }
                 // 不同意退款
                 Order updateOrder = new Order();
@@ -1387,12 +1366,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         } finally {
             lock.unlock();
         }
-        
-    }
+		
+	}
 
 	
 	//同意接单
-	private void acceptReceiveOrder(Long orderId,Long sellerId,Integer orderType) throws ServiceException{
+	private void acceptReceiveOrder(Long orderId,Long sellerId) throws ServiceException{
 		Order order = null;
 		try {
             order = checkOrder(orderId, sellerId);
@@ -1438,84 +1417,38 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         }
 	}
 	
-	//同意接单
-    private void acceptReceiveOrder(Long orderId,Long sellerId) throws ServiceException{
-        Order order = null;
-        try {
-            order = checkOrder(orderId, sellerId);
-            if (order.getOrderStatus().intValue() != Order.OrderStatus.pay_dont_answer_sheet.getId()) {
-                throw new ServiceException(ExceptionCode.SELLER_RECEIVING_ORDER_STATUS_ERROR, "订单状态不正确");
-            }
-            int orderStatus = 0;
-//            if(Order.OrderTypeEnum.takeOut.value() == orderType){ 
-            orderStatus = OrderStatus.reorder.getId();          //配送中
-//            }else if(Order.OrderTypeEnum.eatIn.value() == orderType){
-//              orderStatus = OrderStatus.reorder.getId();          //待消费
-//            }
-            Order update = new Order();
-            update.setDmId(orderId);
-            update.setSellerOrderStatus(SellerOrderStatus.havaOrder.value());
-            update.setReceivingStatus(ReceivingStatus.notSpending.value());
-            update.setOrderStatus(orderStatus);
-            modVoNotNull(update);
-            OrderLog updateOrderLog = new OrderLog();
-            updateOrderLog.setOrderId(orderId);
-            updateOrderLog.setTime(System.currentTimeMillis());
-            updateOrderLog.setStatus(orderStatus);
-            orderLogService.save(updateOrderLog);
-            // 钱包划账
-            if (System.currentTimeMillis() > order.getMakeTime().longValue()) {
-                // 预约时间小于当前时间，则用当前时间 userWalletService
-                this.userWalletService.saveAccectOrder(orderId + "", order.getPaymentPrice(), order.getSellerId(),
-                        order.getUserId(), System.currentTimeMillis(), order.getPayType().intValue());
-            } else {
-                this.userWalletService.saveAccectOrder(orderId + "", order.getPaymentPrice(), order.getSellerId(),
-                        order.getUserId(), order.getMakeTime(), order.getPayType().intValue());
-            }
-            //发送极光消息
-            Map<String, String> extra = new HashMap<String, String>();
-            extra.put("code", RespCode.order_receiving);
-            MsgOutput ex = new MsgOutput();
-            ex.setId(orderId + "");
-            extra.put("data", JSONObject.toJSONString(ex));
-            this.jPushMessageService.sendMsg(RespCode.order_receiving, order.getSellerId(), order.getUserId(), extra);
+	//拒绝接单
+	private void refuseReceiveOrder(Long orderId,Long sellerId) throws ServiceException{
+		 try {
+	            Order orders = checkOrder(orderId, sellerId);
+	            if (orders.getOrderStatus().intValue() != Order.OrderStatus.pay_dont_answer_sheet.getId()) {
+	                throw new ServiceException(ExceptionCode.SELLER_RECEIVING_ORDER_STATUS_ERROR, "订单状态错误不能拒绝");
+	            }
+	            Order update = new Order();
+	            update.setDmId(orderId);
+	            update.setSellerOrderStatus(SellerOrderStatus.refusedOrder.value());
+	            update.setOrderStatus(OrderStatus.failure.getId());
+	            modVoNotNull(update);
+	            OrderLog updateOrderLog = new OrderLog();
+	            updateOrderLog.setOrderId(orderId);
+	            updateOrderLog.setTime(System.currentTimeMillis());
+	            updateOrderLog.setStatus(OrderStatus.refused.getId());
+	            orderLogService.save(updateOrderLog);
+	            // 商家拒绝订单钱包划账
+	            this.userWalletService.saveNoAccOrder(orderId + "", orders.getUserId());
 
-        } finally {
-            lock.unlock();
-        }
-    }
-    
-    //拒绝接单
-    private void refuseReceiveOrder(Long orderId,Long sellerId) throws ServiceException{
-         try {
-                Order orders = checkOrder(orderId, sellerId);
-                if (orders.getOrderStatus().intValue() != Order.OrderStatus.pay_dont_answer_sheet.getId()) {
-                    throw new ServiceException(ExceptionCode.SELLER_RECEIVING_ORDER_STATUS_ERROR, "订单状态错误不能拒绝");
-                }
-                Order update = new Order();
-                update.setDmId(orderId);
-                update.setSellerOrderStatus(SellerOrderStatus.refusedOrder.value());
-                update.setOrderStatus(OrderStatus.failure.getId());
-                modVoNotNull(update);
-                OrderLog updateOrderLog = new OrderLog();
-                updateOrderLog.setOrderId(orderId);
-                updateOrderLog.setTime(System.currentTimeMillis());
-                updateOrderLog.setStatus(OrderStatus.refused.getId());
-                orderLogService.save(updateOrderLog);
-                // 商家拒绝订单钱包划账
-                this.userWalletService.saveNoAccOrder(orderId + "", orders.getUserId());
+	            //发送极光消息
+	            Map<String, String> extra = new HashMap<String, String>();
+	            extra.put("code", RespCode.refuse_place_an_order);
+	            MsgOutput ex = new MsgOutput();
+	            ex.setId(orderId + "");
+	            extra.put("data", JSONObject.toJSONString(ex));
+	            this.jPushMessageService.sendMsg(RespCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
+	        } finally {
+	            lock.unlock();
+	        }
+	}
 
-                //发送极光消息
-                Map<String, String> extra = new HashMap<String, String>();
-                extra.put("code", RespCode.refuse_place_an_order);
-                MsgOutput ex = new MsgOutput();
-                ex.setId(orderId + "");
-                extra.put("data", JSONObject.toJSONString(ex));
-                this.jPushMessageService.sendMsg(RespCode.refuse_place_an_order, orders.getSellerId(), orders.getUserId(), extra);
-            } finally {
-                lock.unlock();
-            }
-    }
 	@Override
 	public Pager<Order, Long> getOrderListByIdOrNickname(Long sellerId,String nickname, Long orderId, Integer pageIndex) throws ServiceException {
 		OrderPage page = new OrderPage();
@@ -1548,6 +1481,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			return query;
 		}
 		for (Order order : list) {
+			if("CONSUME_SUBSIDY".equals(order.getTags())){
+				order.setConstantName("可消费补贴");
+			}else if("HT_SUBSIDY".equals(order.getTags())){
+				order.setConstantName("海淘补贴");
+			}
 			OrderGoods where = new OrderGoods();
 			where.setOrderId(order.getDmId());
 			List<OrderGoods> findList = orderGoodsService.findList(where);
@@ -1594,10 +1532,24 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		query.setList2(orderaArray);
 		return query;
 	}
-
-	@Override
-	public int findOrderCount(Integer orderType, Integer orderStatus, Long userId) throws ServiceException {
-		return 0;
-	}
 	
+	@Override
+	public int findOrderCount(Integer orderType, Integer orderStatus,
+			Long userId) throws ServiceException {
+		  Order where = new Order();
+		  if(null != orderType){
+			  where.setOrderType(orderType);
+		  }
+		  if(null != orderStatus){
+			  where.setOrderStatus(orderStatus);
+		  }
+	      where.setSellerId(userId);
+	      try {
+            Integer count = dao.findOrderCount(where);
+
+            return Integer.parseInt((count == null ? 0 : count) + "");
+	      } catch (DaoException e) {
+	        throw new ServiceException(e);
+	      }
+	}
 }
