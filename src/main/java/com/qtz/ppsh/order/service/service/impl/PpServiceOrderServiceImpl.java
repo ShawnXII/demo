@@ -21,8 +21,8 @@ import com.qtz.base.exception.ServiceException;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.XmlUtil;
 import com.qtz.commons.math.ArithUtil;
-import com.qtz.commons.text.IdGenerator;
 import com.qtz.goods.spi.service.PpServiceGoodsService;
+import com.qtz.id.spi.IdService;
 import com.qtz.member.spi.store.service.SellerStoreService;
 import com.qtz.member.spi.user.service.UsersShopService;
 import com.qtz.payment.spi.service.AlipayService;
@@ -100,11 +100,11 @@ public class PpServiceOrderServiceImpl extends
     @Autowired
     private MbPayService mbPayService;
     @Autowired
-    private IdGenerator idGenerator;
-    @Autowired
     private MsPayService msPayService;
     @Autowired
     private ZxPayService zxPayService;
+    @Autowired
+    private IdService idGenerator;
     
 
     /**
@@ -148,7 +148,7 @@ public class PpServiceOrderServiceImpl extends
             log.error(e);
         }
 
-        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + idGenerator.nextId());
+        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + idGenerator.generateId());
         
         PpServiceOrder ppServiceOrder =
                 new PpServiceOrder(Long.valueOf(pgId), reqUserId, ppServiceGoods.getOriginalPrice(), ppServiceGoods.toString(), payType.intValue(), ppServiceGoods.getPresentPrice());
