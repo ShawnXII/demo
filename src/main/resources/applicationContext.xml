@@ -17,7 +17,7 @@
 	<bean id="springContextHolder" class="com.qtz.base.util.SpringContextHolder"
 		lazy-init="false" />
 	<!-- snowflake16位长度长整形id生成器 -->
-	<bean id="idGenerator" class="com.qtz.base.util.IdGenerator">
+	<bean id="idGenerator" class="com.qtz.commons.text.IdGenerator">
 		<constructor-arg index="0" value="${snowflake.workerid}" />
 	</bean>
 	<bean id="cfgHelper" class="com.qtz.commons.text.CfgHelper"
