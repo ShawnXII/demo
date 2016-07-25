@@ -620,9 +620,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else {
                 page.setSellerId(userId);
             }
-            if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
+//            if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
             	 page.setOrderType(orderType);
-            }
+//            }
             page.setNowPage(pageIndex);
             page.setOrderField(OrderKey.crtime);
             page.setOrderDirection(false);
