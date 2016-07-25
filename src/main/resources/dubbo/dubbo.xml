@@ -42,6 +42,7 @@
 	<dubbo:reference id="llPayServiceImpl" interface="com.qtz.payment.spi.service.LlPayService"  check="false"/>
 	<dubbo:reference id="lakalaPayServiceImpl" interface="com.qtz.payment.spi.service.LakalaPayService"  check="false"/>
 	
+	
 	<dubbo:reference id="sellerStoreServiceImpl" interface="com.qtz.member.spi.store.service.SellerStoreService"  check="false"/>
 	<dubbo:reference id="usersShopServiceImpl" interface="com.qtz.member.spi.user.service.UsersShopService"  check="false"/>
 	<dubbo:reference id="couponServiceImpl" interface="com.qtz.member.spi.coupon.service.CouponService"  check="false"/>
@@ -51,10 +52,11 @@
 	<dubbo:reference id="userWalletServiceImpl" interface="com.qtz.member.spi.userwallet.service.UserWalletService"  check="false"/>
 	<dubbo:reference id="reconciliationRecordServiceImpl" interface="com.qtz.member.spi.userwallet.service.ReconciliationRecordService"  check="false"/>
 	
-	<dubbo:reference id="storeGoodsServiceImpl" interface="com.qtz.goods.spi.service.StoreGoodsService"  check="false"/>
-	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService"  check="false"/>
 	
-	<dubbo:reference id="jPushMessageServiceImpl" interface="com.qtz.system.spi.jpush.service.JPushMessageService"  check="false"/>
+	
+	<dubbo:reference id="storeGoodsServiceImpl" interface="com.qtz.goods.spi.service.StoreGoodsService"/>
+	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService"/>
+	<dubbo:reference id="jPushMessageServiceImpl" interface="com.qtz.system.spi.jpush.service.JPushMessageService"/>
 	
 </beans>
 
