@@ -58,5 +58,9 @@
 	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService"/>
 	<dubbo:reference id="jPushMessageServiceImpl" interface="com.qtz.system.spi.jpush.service.JPushMessageService"/>
 	
+	<!-- 海淘订单 -->
+    <dubbo:reference id="origOrderService" interface="com.qtz.orig.order.service.OrigOrderService" check="false"/>
+  
+ 
 </beans>
 
