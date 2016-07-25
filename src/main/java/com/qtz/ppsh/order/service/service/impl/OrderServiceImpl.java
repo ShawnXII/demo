@@ -671,9 +671,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             } else {
                 page.setSellerId(userId);
             }
+
+//            if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
+
             page.setOrderType(orderType);
             /*if(Order.OrderStatus.reorder.getId() == orderStatus.intValue()){
+>>>>>>> branch 'dev-1.0.0' of git@gitlab.qtz.com:java/qtz-ppsh-order-service.git
             	 page.setOrderType(orderType);
+<<<<<<< HEAD
+//            }
+=======
             }*/
             page.setNowPage(pageIndex);
             page.setOrderField(OrderKey.crtime);
