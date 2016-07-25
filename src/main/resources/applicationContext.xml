@@ -14,7 +14,7 @@
 			"
 	default-autowire="byName" default-lazy-init="false">
 	<!-- Spring getBean定义 -->
-	<bean id="springContextHolder" class="com.qtz.base.util.SpringContextHolder"
+	<bean id="SpringContextHelper" class="com.qtz.commons.framework.SpringContextHelper"
 		lazy-init="false" />
 	<!-- snowflake16位长度长整形id生成器 -->
 	<bean id="idGenerator" class="com.qtz.commons.text.IdGenerator">
