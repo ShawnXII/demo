@@ -75,4 +75,9 @@ public class OrderDaoImpl extends MyBaitsDaoImpl<Order,Long> implements OrderDao
 			throws DaoException {
 		return getMyBaitsTemplate().getSqlSession().selectList(getPreName()+Global.SPLIT_DIAN+"getOrdersToExport", param);
 	}
+	@Override
+	public Integer findOrderCount(Order vo) throws DaoException {
+		return getMyBaitsTemplate().getSqlSession().selectOne(getPreName()+Global.SPLIT_DIAN+"findOrderCount", vo);
+		
+	}
 }
