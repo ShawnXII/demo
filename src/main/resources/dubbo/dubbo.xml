@@ -60,7 +60,9 @@
 	
 	<!-- 海淘订单 -->
     <dubbo:reference id="origOrderService" interface="com.qtz.orig.order.service.OrigOrderService" check="false"/>
-  
+    
+    <dubbo:reference interface="com.qtz.id.spi.IdService"
+		id="idServiceImpl" />
  
 </beans>
 

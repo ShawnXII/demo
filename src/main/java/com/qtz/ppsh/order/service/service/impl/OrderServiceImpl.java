@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -44,6 +45,7 @@ import com.qtz.goods.spi.dto.StoreGoods;
 import com.qtz.goods.spi.dto.StoreGoods.GoodsStatus;
 import com.qtz.goods.spi.dto.StoreGoods.IsCoupon;
 import com.qtz.goods.spi.service.StoreGoodsService;
+import com.qtz.id.spi.IdService;
 import com.qtz.member.spi.coupon.dto.CouponUser;
 import com.qtz.member.spi.coupon.model.CouponKey;
 import com.qtz.member.spi.coupon.service.CouponService;
@@ -154,6 +156,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     @Autowired
     private ReconciliationRecordService reconciliationRecordService;
    
+    @Autowired
+    private IdService idServiceImpl;
+   
     /**
      * 【取得】业务DAO对象
      *
@@ -256,7 +261,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             totalPrice = ArithUtil.round(totalPrice, 2, BigDecimal.ROUND_HALF_UP);
             orderGoods.setGoodsTotalPrice(totalPrice);// 单个商品总价
             orderGoods.setGoodsId(storeGoods.getDmId());
-            orderGoodsService.save(orderGoods);
+            if(orderGoods.getDmId()==null||orderGoods.getDmId()<1){
+                orderGoods.setDmId(this.idServiceImpl.generateId());
+                orderGoodsService.addVo(orderGoods);
+            }else{
+                orderGoodsService.modVo(orderGoods);
+            }
 
             orderPrice = ArithUtil.add(orderPrice, totalPrice);
             if (sellerId == 0L) {
@@ -367,7 +377,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
         save.setStatus(PayStatusEnum.PAY_FAILURE.getId());// 初始订单日志未支付
         save.setTime(order.getCrtime());
         // 记录订单日志
-        orderLogService.save(save);
+        if(save.getDmId()==null||save.getDmId()<1){
+            save.setDmId(this.idServiceImpl.generateId());
+            orderLogService.addVo(save);
+        }else{
+            orderLogService.modVo(save);
+        }
         // 计算价格
         saveCalculatePaymentPrice(orderId, couponId, order.getUserId());
         return orderId;
@@ -729,7 +744,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             updateOrderLog.setOrderId(orderId);
             updateOrderLog.setTime(System.currentTimeMillis());
             updateOrderLog.setStatus(OrderStatus.reorder.getId());
-            orderLogService.save(updateOrderLog);
+            if(updateOrderLog.getDmId()==null||updateOrderLog.getDmId()<1){
+                updateOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(updateOrderLog);
+            }else{
+                orderLogService.modVo(updateOrderLog);
+            }
             // 钱包划账
             if (System.currentTimeMillis() > order.getMakeTime().longValue()) {
                 // 预约时间小于当前时间，则用当前时间 userWalletService
@@ -772,7 +792,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             updateOrderLog.setOrderId(orderId);
             updateOrderLog.setTime(System.currentTimeMillis());
             updateOrderLog.setStatus(OrderStatus.reorder.getId());
-            orderLogService.save(updateOrderLog);
+            if(updateOrderLog.getDmId()==null||updateOrderLog.getDmId()<1){
+                updateOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(updateOrderLog);
+            }else{
+                orderLogService.modVo(updateOrderLog);
+            }
             //找到当前订单商家的二级分类
  			SellerStore sstore = sellerStoreService.getSellerStore(order.getSellerId());
  			if (null == sstore) {
@@ -872,7 +897,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             updateOrderLog.setOrderId(orderId);
             updateOrderLog.setTime(System.currentTimeMillis());
             updateOrderLog.setStatus(OrderStatus.refused.getId());
-            orderLogService.save(updateOrderLog);
+            if(updateOrderLog.getDmId()==null||updateOrderLog.getDmId()<1){
+                updateOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(updateOrderLog);
+            }else{
+                orderLogService.modVo(updateOrderLog);
+            }
             // 商家拒绝订单钱包划账
             this.userWalletService.saveNoAccOrder(orderId + "", orders.getUserId());
 
@@ -906,7 +936,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 orderLog.setOrderId(orderId);
                 orderLog.setStatus(OrderStatus.failure.getId());
                 orderLog.setTime(System.currentTimeMillis());
-                orderLogService.save(orderLog);
+                if(orderLog.getDmId()==null||orderLog.getDmId()<1){
+                    orderLog.setDmId(this.idServiceImpl.generateId());
+                    orderLogService.addVo(orderLog);
+                }else{
+                    orderLogService.modVo(orderLog);
+                }
                 // 删除订单日志
                 // this.orderLogService.delOrderLogByOrderId(orderId);
                 Order updateOrder = new Order();
@@ -934,7 +969,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                     long time = System.currentTimeMillis();
                     saveOrderLog.setTime(time);
                     saveOrderLog.setStatus(OrderStatus.failure.getId());
-                    orderLogService.save(saveOrderLog);
+                    if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                        saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                        orderLogService.addVo(saveOrderLog);
+                    }else{
+                        orderLogService.modVo(saveOrderLog);
+                    }
                     // 取消订单钱包操作
                     this.userWalletService.saveNoAccOrder(orderId + "", order.getUserId());
                     //发送极光消息
@@ -991,7 +1031,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             saveOrderLog.setStatus(OrderStatus.success.getId());
             saveOrderLog.setTime(time);
             saveOrderLog.setOrderId(orderId);
-            orderLogService.save(saveOrderLog);
+            if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(saveOrderLog);
+            }else{
+                orderLogService.modVo(saveOrderLog);
+            }
         } finally {
             lock.unlock();
         }
@@ -1057,7 +1102,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             saveOrderLog.setTime(System.currentTimeMillis());
             saveOrderLog.setNotes(refundNote);
             saveOrderLog.setOrderId(orderId);
-            orderLogService.save(saveOrderLog);
+            if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(saveOrderLog);
+            }else{
+                orderLogService.modVo(saveOrderLog);
+            }
 
             for (int i = 0; i < records.size(); i++) {
                 ReconciliationRecord r = records.get(i);
@@ -1122,7 +1172,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 saveOrderLog.setTime(System.currentTimeMillis());
                 saveOrderLog.setOrderId(orderId);
                 saveOrderLog.setNotes(message);
-                orderLogService.save(saveOrderLog);
+                if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                    saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                    orderLogService.addVo(saveOrderLog);
+                }else{
+                    orderLogService.modVo(saveOrderLog);
+                }
 
                 for (int i = 0; i < records.size(); i++) {
                     ReconciliationRecord r = records.get(i);
@@ -1151,7 +1206,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 saveOrderLog.setStatus(RefundStatus.agreedRefund.value());
                 saveOrderLog.setTime(System.currentTimeMillis());
                 saveOrderLog.setOrderId(orderId);
-                orderLogService.save(saveOrderLog);
+                if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                    saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                    orderLogService.addVo(saveOrderLog);
+                }else{
+                    orderLogService.modVo(saveOrderLog);
+                }
                 this.userWalletService.saveAccBackMoney(orderId + "", order.getUserId());
 
                 //自定义消息
@@ -1328,7 +1388,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 saveOrderLog.setTime(System.currentTimeMillis());
                 saveOrderLog.setOrderId(orderId);
                 saveOrderLog.setNotes(message);
-                orderLogService.save(saveOrderLog);
+                if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                    saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                    orderLogService.addVo(saveOrderLog);
+                }else{
+                    orderLogService.modVo(saveOrderLog);
+                }
 
                 for (int i = 0; i < records.size(); i++) {
                     ReconciliationRecord r = records.get(i);
@@ -1356,7 +1421,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                 saveOrderLog.setStatus(RefundStatus.agreedRefund.value());
                 saveOrderLog.setTime(System.currentTimeMillis());
                 saveOrderLog.setOrderId(orderId);
-                orderLogService.save(saveOrderLog);
+                if(saveOrderLog.getDmId()==null||saveOrderLog.getDmId()<1){
+                    saveOrderLog.setDmId(this.idServiceImpl.generateId());
+                    orderLogService.addVo(saveOrderLog);
+                }else{
+                    orderLogService.modVo(saveOrderLog);
+                }
                 this.userWalletService.saveAccBackMoney(orderId + "", order.getUserId());
 
                 //自定义消息
@@ -1394,7 +1464,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             updateOrderLog.setOrderId(orderId);
             updateOrderLog.setTime(System.currentTimeMillis());
             updateOrderLog.setStatus(orderStatus);
-            orderLogService.save(updateOrderLog);
+            if(updateOrderLog.getDmId()==null||updateOrderLog.getDmId()<1){
+                updateOrderLog.setDmId(this.idServiceImpl.generateId());
+                orderLogService.addVo(updateOrderLog);
+            }else{
+                orderLogService.modVo(updateOrderLog);
+            }
             // 钱包划账
             if (System.currentTimeMillis() > order.getMakeTime().longValue()) {
                 // 预约时间小于当前时间，则用当前时间 userWalletService
@@ -1433,7 +1508,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	            updateOrderLog.setOrderId(orderId);
 	            updateOrderLog.setTime(System.currentTimeMillis());
 	            updateOrderLog.setStatus(OrderStatus.refused.getId());
-	            orderLogService.save(updateOrderLog);
+	            if(updateOrderLog.getDmId()==null||updateOrderLog.getDmId()<1){
+	                updateOrderLog.setDmId(this.idServiceImpl.generateId());
+	                orderLogService.addVo(updateOrderLog);
+	            }else{
+	                orderLogService.modVo(updateOrderLog);
+	            }
 	            // 商家拒绝订单钱包划账
 	            this.userWalletService.saveNoAccOrder(orderId + "", orders.getUserId());
 
