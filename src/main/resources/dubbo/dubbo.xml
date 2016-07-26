@@ -12,7 +12,7 @@
     <dubbo:application name="qtz-ppsh-order-service"/>
     
  	<!-- 使用zookeeper注册中心暴露服务地址 -->
-	<dubbo:registry protocol="zookeeper" address="${ZOOKEEPER_IP}" />
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
     <!-- 服务提供者,超时时间全局设为3秒(dubbo默认为1秒),需要根据具体情况在service上来设置 -->
@@ -53,16 +53,10 @@
 	<dubbo:reference id="reconciliationRecordServiceImpl" interface="com.qtz.member.spi.userwallet.service.ReconciliationRecordService"  check="false"/>
 	
 	
-	
 	<dubbo:reference id="storeGoodsServiceImpl" interface="com.qtz.goods.spi.service.StoreGoodsService"/>
 	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService"/>
 	<dubbo:reference id="jPushMessageServiceImpl" interface="com.qtz.system.spi.jpush.service.JPushMessageService"/>
 	
-	<!-- 海淘订单 -->
-    <dubbo:reference id="origOrderService" interface="com.qtz.orig.order.service.OrigOrderService" check="false"/>
-    
-    <dubbo:reference interface="com.qtz.id.spi.IdService"
-		id="idServiceImpl" />
- 
+    <dubbo:reference interface="com.qtz.id.spi.IdService" id="idServiceImpl" />
 </beans>
 
