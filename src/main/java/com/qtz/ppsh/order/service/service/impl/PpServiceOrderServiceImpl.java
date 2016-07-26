@@ -104,7 +104,7 @@ public class PpServiceOrderServiceImpl extends
     @Autowired
     private ZxPayService zxPayService;
     @Autowired
-    private IdService idGenerator;
+    private IdService idService;
     
 
     /**
@@ -148,7 +148,7 @@ public class PpServiceOrderServiceImpl extends
             log.error(e);
         }
 
-        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + idGenerator.generateId());
+        Long orderId = Long.parseLong(OrderPrefix.PP_SHOP_ORDER + idService.generateId());
         
         PpServiceOrder ppServiceOrder =
                 new PpServiceOrder(Long.valueOf(pgId), reqUserId, ppServiceGoods.getOriginalPrice(), ppServiceGoods.toString(), payType.intValue(), ppServiceGoods.getPresentPrice());
