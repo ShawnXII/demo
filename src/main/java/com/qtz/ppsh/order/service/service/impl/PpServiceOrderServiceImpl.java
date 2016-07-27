@@ -1,17 +1,14 @@
 package com.qtz.ppsh.order.service.service.impl;
 
 import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
 import com.qtz.base.dto.order.PayOrderTypeEnum;
 import com.qtz.base.dto.order.PayStatusEnum;
 import com.qtz.base.dto.order.PaymentMethodEnum;
-import com.qtz.base.dto.order.PpServiceGoods;
 import com.qtz.base.dto.order.PpServiceOrder;
 import com.qtz.base.dto.user.User;
 import com.qtz.base.dto.user.UserType;
@@ -21,6 +18,7 @@ import com.qtz.base.exception.ServiceException;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.XmlUtil;
 import com.qtz.commons.math.ArithUtil;
+import com.qtz.goods.spi.dto.PpServiceGoods;
 import com.qtz.goods.spi.service.PpServiceGoodsService;
 import com.qtz.id.spi.IdService;
 import com.qtz.member.spi.store.service.SellerStoreService;
