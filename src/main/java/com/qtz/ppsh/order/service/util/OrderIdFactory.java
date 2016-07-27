@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.qtz.base.util.Constants;
 import com.qtz.base.util.RedisGroupKey;
-import com.qtz.base.util.SpringContextHolder;
+import com.qtz.commons.framework.SpringContextHelper;
 import com.qtz.commons.text.CfgHelper;
 
 
@@ -55,7 +55,7 @@ public class OrderIdFactory {
 		}
 		
 		private Long suffix(){
-		StringRedisTemplate stringRedisTemplate=SpringContextHolder.getApplicationContext().getBean(StringRedisTemplate.class);
+		StringRedisTemplate stringRedisTemplate=SpringContextHelper.getBean(StringRedisTemplate.class);
 			//	
 		Long increment=null;
 			if(stringRedisTemplate.hasKey(RedisGroupKey.amf_pay_order_suffix)){
