@@ -12,7 +12,7 @@
     <dubbo:application name="qtz-ppsh-order-service"/>
     
  	<!-- 使用zookeeper注册中心暴露服务地址 -->
-	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" />
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.servers}" file="${dubbo.registry.file}"/>
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="${dubbo.threads}"/>
     <!-- 服务提供者,超时时间全局设为3秒(dubbo默认为1秒),需要根据具体情况在service上来设置 -->
