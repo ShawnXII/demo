@@ -53,7 +53,9 @@
 ,t.paOrdersId,t.reviews 
 </sql>
 
-
+	<sql id="Base_Column_List_Close" >
+		 t.dmId,t.userId
+	</sql>
 
 <!-- 查询条件 -->
 
@@ -418,11 +420,16 @@
 	<include refid="Example_Where_Clause"/>
 
 </select>
-<!-- 查询需要自动关闭的订单 -->
-<select id="queryCloseOrder" resultMap="BaseResultMap" parameterType="java.lang.Long">
-	select <include refid="Base_Column_List"/>
-	from `order` t where  t.orderStatus=4  and  <![CDATA[ t.makeTime < #{ctime} ]]>  limit 0,300;
-</select>
+
+
+	<!-- 查询需要自动关闭的订单 -->
+	<select id="queryCloseOrder" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select 
+			<include refid="Base_Column_List_Close"/>
+		from `order` t where  t.orderStatus=4  and  <![CDATA[ t.makeTime < #{ctime} ]]>  limit 0,300;
+	</select>
+
+
 <!-- 查询交易关闭订单 -->
 <select id="queryTransactionClose" resultMap="BaseResultMap" parameterType="Map">
 	select <include refid="Base_Column_List"/>
