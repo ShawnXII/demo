@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.qtz.base.util.Constants;
-import com.qtz.base.util.RedisGroupKey;
+import com.qtz.base.util.RedisNameSpache;
 import com.qtz.commons.framework.SpringContextHelper;
 import com.qtz.commons.text.CfgHelper;
 
@@ -58,10 +58,10 @@ public class OrderIdFactory {
 		StringRedisTemplate stringRedisTemplate=SpringContextHelper.getBean(StringRedisTemplate.class);
 			//	
 		Long increment=null;
-			if(stringRedisTemplate.hasKey(RedisGroupKey.amf_pay_order_suffix)){
-				increment=stringRedisTemplate.opsForValue().increment(RedisGroupKey.amf_pay_order_suffix, 1);
+			if(stringRedisTemplate.hasKey(RedisNameSpache.amf_pay_order_suffix)){
+				increment=stringRedisTemplate.opsForValue().increment(RedisNameSpache.amf_pay_order_suffix, 1);
 			}else{
-				stringRedisTemplate.opsForValue().set(RedisGroupKey.amf_pay_order_suffix, String.valueOf(initSuffix),24,TimeUnit.HOURS);
+				stringRedisTemplate.opsForValue().set(RedisNameSpache.amf_pay_order_suffix, String.valueOf(initSuffix),24,TimeUnit.HOURS);
 				increment=initSuffix;
 			}
 			return increment;
