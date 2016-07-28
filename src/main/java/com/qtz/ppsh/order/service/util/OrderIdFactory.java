@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import com.qtz.base.consts.RedisNameSpache;
 import com.qtz.base.util.Constants;
-import com.qtz.base.util.RedisNameSpache;
 import com.qtz.commons.framework.SpringContextHelper;
 import com.qtz.commons.text.CfgHelper;
 
