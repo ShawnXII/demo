@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qtz.base.dao.BizDao;
-import com.qtz.base.dto.order.PayOrderModel;
-import com.qtz.base.dto.order.PayOrderTypeEnum;
 import com.qtz.base.dto.order.PpServiceOrder;
 import com.qtz.base.dto.user.User;
 import com.qtz.base.dto.user.UserType;
@@ -26,6 +24,8 @@ import com.qtz.member.spi.store.service.SellerStoreService;
 import com.qtz.member.spi.user.service.UsersShopService;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
 import com.qtz.ppsh.order.spi.dto.OrderPrefix;
+import com.qtz.ppsh.order.spi.dto.PayOrderModel;
+import com.qtz.ppsh.order.spi.dto.PayOrderTypeEnum;
 import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
 
 
