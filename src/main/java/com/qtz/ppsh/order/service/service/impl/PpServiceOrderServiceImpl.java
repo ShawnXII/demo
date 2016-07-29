@@ -1,14 +1,16 @@
 package com.qtz.ppsh.order.service.service.impl;
 
+
+
 import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.qtz.base.dao.BizDao;
 import com.qtz.base.dto.order.PayOrderModel;
 import com.qtz.base.dto.order.PayOrderTypeEnum;
-import com.qtz.base.dto.order.PayStatusEnum;
-import com.qtz.base.dto.order.PaymentMethodEnum;
 import com.qtz.base.dto.order.PpServiceOrder;
 import com.qtz.base.dto.user.User;
 import com.qtz.base.dto.user.UserType;
@@ -16,27 +18,13 @@ import com.qtz.base.exception.DaoException;
 import com.qtz.base.exception.ExceptionCode;
 import com.qtz.base.exception.ServiceException;
 import com.qtz.base.service.impl.BaseServiceImpl;
-import com.qtz.base.util.XmlUtil;
 import com.qtz.commons.math.ArithUtil;
 import com.qtz.goods.spi.dto.PpServiceGoods;
 import com.qtz.goods.spi.service.PpServiceGoodsService;
 import com.qtz.id.spi.IdService;
 import com.qtz.member.spi.store.service.SellerStoreService;
 import com.qtz.member.spi.user.service.UsersShopService;
-import com.qtz.payment.spi.service.AlipayService;
-import com.qtz.payment.spi.service.CnPayService;
-import com.qtz.payment.spi.service.JdPayService;
-import com.qtz.payment.spi.service.LakalaPayService;
-import com.qtz.payment.spi.service.MbPayService;
-import com.qtz.payment.spi.service.MsPayService;
-import com.qtz.payment.spi.service.PAPayService;
-import com.qtz.payment.spi.service.PaymentService;
-import com.qtz.payment.spi.service.YeePayService;
-import com.qtz.payment.spi.service.YsPayService;
-import com.qtz.payment.spi.service.ZfPayService;
-import com.qtz.payment.spi.service.ZxPayService;
 import com.qtz.ppsh.order.service.dao.PpServiceOrderDao;
-import com.qtz.ppsh.order.spi.dto.Alipay;
 import com.qtz.ppsh.order.spi.dto.OrderPrefix;
 import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
 
@@ -60,50 +48,29 @@ import com.qtz.ppsh.order.spi.service.PpServiceOrderService;
  */
 @Service("ppServiceOrderServiceImpl")
 public class PpServiceOrderServiceImpl extends
-        BaseServiceImpl<PpServiceOrder,Long> implements
+        BaseServiceImpl<PpServiceOrder, Long> implements
         PpServiceOrderService {
     /**
      * 初始化日志对象
      */
-    private static Logger log = Logger.getLogger(PpServiceOrderServiceImpl.class);
+	private static Logger log = Logger.getLogger(PpServiceOrderServiceImpl.class);
     /**
      * 注入goodsDAO接口类
      */
     @Resource(name = "ppServiceOrderDaoImpl")
     private PpServiceOrderDao dao;
+
     @Autowired
     private UsersShopService usersShopService;
+
     @Autowired
     private PpServiceGoodsService serviceGoodsService;
-    @Autowired
-    private PaymentService paymentService;
-    @Autowired
-    private AlipayService alipayService;
-    @Autowired
-    private JdPayService jdPayService;
-    @Autowired
-    private YsPayService ysPayService;
-    @Autowired
-    private ZfPayService zfPayService;
-    @Autowired
-    private PAPayService paPayService;
-    @Autowired
-    private YeePayService yeePayService;
-    @Autowired
-    private LakalaPayService lakalaPayService;
+
     @Autowired
     private SellerStoreService sellerStoreService;
-    @Autowired
-    private CnPayService cnPayService;
-    @Autowired
-    private MbPayService mbPayService;
-    @Autowired
-    private MsPayService msPayService;
-    @Autowired
-    private ZxPayService zxPayService;
+  
     @Autowired
     private IdService idService;
-    
 
     /**
      * 【取得】业务DAO对象
@@ -114,6 +81,7 @@ public class PpServiceOrderServiceImpl extends
     protected BizDao<PpServiceOrder, Long> getDao() {
         return dao;
     }
+
 
     @Override
     public Long saveSubSellerStoreOrder(String pgId, Long reqUserId, Integer payType) throws ServiceException {
@@ -166,133 +134,7 @@ public class PpServiceOrderServiceImpl extends
 
     @Override
     public boolean queryOrderPaymentStatus(Long orderId, Integer paymentType) throws ServiceException {
-        boolean isPay = false;
-        PpServiceOrder order = findVo(orderId, null);
-        if (order == null) {
-            log.debug("订单不存在  orderId = " + orderId);
-            throw new ServiceException(ExceptionCode.ORDER_INEXISTENCE, "订单不存在");
-        }
-        try {
-            // 如果是未支付则去查询
-            if (null != order.getPayType() && (-1 == paymentType || 13 == paymentType)) {
-                paymentType = order.getPayType();
-            }
-            log.debug("订单支付状态" + order.getPayStatus());
-            if (order.getPayStatus() == PayStatusEnum.PAY_FAILURE.getId()) {
-                if (paymentType == PaymentMethodEnum.ALIPAY.getValue()) {
-                    log.debug("主动查询支付宝支付结果");
-                    try {
-                        log.debug("主动查询支付宝支付结果");
-                        String respXML = alipayService.query(orderId);
-                        Alipay alipayQueryXml = XmlUtil.XMLBean(respXML,Alipay.class);
-                        log.debug("查询支付宝支付数据" + alipayQueryXml.toString());
-                        if (alipayQueryXml.getIsSuccess().equals("T")) {
-                            String trade_status = alipayQueryXml.getResponse()
-                                    .getRrade().getTrade_status();// 交易状态
-                            if (trade_status.equals("TRADE_SUCCESS")) {
-                                log.debug("查询支付宝交易状态成功支付");
-                                isPay = true;
-                                paymentService.updateDealPayResultByPpService(Long.valueOf(alipayQueryXml
-                                        .getResponse().getRrade()
-                                        .getOut_trade_no()), alipayQueryXml.getResponse().getRrade()
-                                        .getTrade_no(), Double.parseDouble(alipayQueryXml
-                                        .getResponse().getRrade()
-                                        .getPrice()), PaymentMethodEnum.ALIPAY.getValue());
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        throw new ServiceException(e);
-                    }
-                } else if (paymentType == PaymentMethodEnum.WEIXIN.getValue()) {
-                    log.debug("主动查询微信支付结果.");
-                } else if (paymentType == PaymentMethodEnum.JDPAY.getValue()) {
-                    String status = jdPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("2".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.YSPAY.getValue()) {
-                    String status = ysPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("0".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.PAPAY.getValue()) {
-                    String status = paPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("01".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.YEEPAY.getValue()) {
-                    String status = yeePayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.ZFPAY.getValue()) {
-                    String status = zfPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("00".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.LKLPAY.getValue()) {
-                    String status = lakalaPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.CNPAY.getValue()) {
-                    String status = cnPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单处理中,请稍候");
-                    }
-                } else if (paymentType == PaymentMethodEnum.MBPAY.getValue()) {
-                    String status = mbPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER, paymentType);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                } else if (paymentType == PaymentMethodEnum.MBPAY2.getValue()) {
-                    String status = mbPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER, paymentType);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                }else if(paymentType == PaymentMethodEnum.MSPAY.getValue()){
-                	String status = msPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                }else if(paymentType == PaymentMethodEnum.ZXPAY.getValue()){
-                	String status = zxPayService.queryOrder(orderId, PayOrderTypeEnum.PPORDER);
-                    if ("1".equals(status)) {
-                        isPay = true;
-                    } else {
-                        throw new ServiceException(-100137, "订单未支付");
-                    }
-                }
-            }
-            return isPay;
-        } catch (Exception e) {
-            if (e instanceof ServiceException) {
-                throw new ServiceException(((ServiceException) e).getErrorType(), ((ServiceException) e).getErrorTitle());
-            } else {
-                throw new ServiceException(e);
-            }
-        }
+        return true;
     }
 
     @Override
@@ -331,7 +173,7 @@ public class PpServiceOrderServiceImpl extends
         model.setOrderId(String.valueOf(orderId));
         model.setTime(order.getCrtime());
         model.setOrderName("胖胖生活年费");
-//        model.setOrderType(PayOrderTypeEnum.PPORDER);
+        model.setOrderType(PayOrderTypeEnum.PPORDER);
         Double price = order.getToPayAmount();
         model.setYuanPrice(ArithUtil.moneyFormat(price));
         model.setFenPrice(String.valueOf(ArithUtil.yuanToFen(price)));
