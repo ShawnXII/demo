@@ -27,21 +27,6 @@
     <dubbo:service  interface="com.qtz.ppsh.order.spi.service.OrderService"  ref="orderServiceImpl"  />  
     <dubbo:service  interface="com.qtz.ppsh.order.spi.service.PpServiceOrderService"  ref="ppServiceOrderServiceImpl"  />  
 	<!-- ##################################依赖外部的服务################################## -->	
-	<dubbo:reference id="paymentServiceImpl" interface="com.qtz.payment.spi.service.PaymentService"  check="false"/>
-	<dubbo:reference id="alipayServiceImpl" interface="com.qtz.payment.spi.service.AlipayService"  check="false"/>
-	<dubbo:reference id="jdPayServiceImpl" interface="com.qtz.payment.spi.service.JdPayService"  check="false"/>
-	<dubbo:reference id="ysPayServiceImpl" interface="com.qtz.payment.spi.service.YsPayService"  check="false"/>
-	<dubbo:reference id="zfPayServiceImpl" interface="com.qtz.payment.spi.service.ZfPayService"  check="false"/>
-	<dubbo:reference id="pAPayServiceImpl" interface="com.qtz.payment.spi.service.PAPayService"  check="false"/>
-	<dubbo:reference id="yeePayServiceImpl" interface="com.qtz.payment.spi.service.YeePayService"  check="false"/>
-	<dubbo:reference id="cnPayServiceImpl" interface="com.qtz.payment.spi.service.CnPayService"  check="false"/>
-	<dubbo:reference id="mbPayServiceImpl" interface="com.qtz.payment.spi.service.MbPayService"  check="false"/>
-	<dubbo:reference id="msPayServiceImpl" interface="com.qtz.payment.spi.service.MsPayService"  check="false"/>
-	<dubbo:reference id="zxPayServiceImpl" interface="com.qtz.payment.spi.service.ZxPayService"  check="false"/>
-	<dubbo:reference id="ghtPayServiceImpl" interface="com.qtz.payment.spi.service.GhtPayService"  check="false"/>
-	<dubbo:reference id="llPayServiceImpl" interface="com.qtz.payment.spi.service.LlPayService"  check="false"/>
-	<dubbo:reference id="lakalaPayServiceImpl" interface="com.qtz.payment.spi.service.LakalaPayService"  check="false"/>
-	
 	
 	<dubbo:reference id="sellerStoreServiceImpl" interface="com.qtz.member.spi.store.service.SellerStoreService"  check="false"/>
 	<dubbo:reference id="usersShopServiceImpl" interface="com.qtz.member.spi.user.service.UsersShopService"  check="false"/>
