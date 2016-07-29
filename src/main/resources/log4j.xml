@@ -13,7 +13,7 @@
 	<appender name="rollingInfoFile" class="org.apache.log4j.RollingFileAppender">
 		<param name="Append" value="true" />
 		<param name="File" value="${log.info.file}" />
-		<param name="MaxFileSize" value="100" />
+		<param name="MaxFileSize" value="104857600" />
 		<param name="MaxBackupIndex" value="10" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] {%c:%L}-%m%n" />
@@ -27,7 +27,7 @@
 	<appender name="rollingErrorFile" class="org.apache.log4j.RollingFileAppender">
 		<param name="Append" value="true" />
 		<param name="File" value="${log.error.file}" />
-		<param name="MaxFileSize" value="10" />
+		<param name="MaxFileSize" value="10485760" />
 		<param name="MaxBackupIndex" value="10" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] {%c:%L}-%m%n" />
