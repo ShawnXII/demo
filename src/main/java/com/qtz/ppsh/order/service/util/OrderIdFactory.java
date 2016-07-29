@@ -23,8 +23,7 @@ import com.qtz.commons.text.CfgHelper;
  */
 public class OrderIdFactory {
 	private static String orderIdPrefix="";
-	private OrderIdFactory(){
-	}
+	private OrderIdFactory(){}
 	private static OrderIdSingle orderIdSingle=null;
 	private static final Long initSuffix=100000L;
 	 
