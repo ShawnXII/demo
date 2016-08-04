@@ -155,7 +155,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
     @Autowired
     private JPushMessageService jPushMessageService;
-    @Resource(name="customMsgServiceImpl")
+    
+    @Autowired
 	private CustomMsgService customMsgService;
     
 

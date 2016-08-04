@@ -42,8 +42,8 @@
 	<dubbo:reference id="ppServiceGoodsServiceImpl" interface="com.qtz.goods.spi.service.PpServiceGoodsService"/>
 	
 	<!-- 自定义消息 -->
-	<dubbo:reference id="customMsgServiceImpl"  interface="com.qtz.system.spi.jpush.service.CustomMsgService"/>
-	<!-- id消息 -->
+	<dubbo:reference id="customMsgService"  interface="com.qtz.system.spi.jpush.service.CustomMsgService"/>
+	<!-- id -->
     <dubbo:reference id="idServiceImpl"  interface="com.qtz.id.spi.IdService" />
 </beans>
 
