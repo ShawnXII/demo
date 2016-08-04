@@ -39,6 +39,11 @@
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.qtz.jpush</groupId>
+			<artifactId>qtz-jpush</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.6</version>
@@ -117,12 +122,6 @@
 			<version>${org.springframework.version}</version>
 		</dependency>
 		<!-- spring end -->
-		<!-- 极光推送 -->
-	    <dependency>
-	    	<groupId>cn.jpush.api</groupId>
-	    	<artifactId>jpush-client</artifactId>
-	    	<version>3.1.3</version>
-		</dependency>
 		<!-- mybatis -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
