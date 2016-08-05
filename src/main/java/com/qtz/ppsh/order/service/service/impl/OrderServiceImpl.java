@@ -9,15 +9,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -39,6 +36,7 @@ import com.qtz.base.response.RespCode;
 import com.qtz.base.service.impl.BaseServiceImpl;
 import com.qtz.base.util.RespKey;
 import com.qtz.commons.math.ArithUtil;
+import com.qtz.commons.text.CfgHelper;
 import com.qtz.goods.spi.dto.StoreGoods;
 import com.qtz.goods.spi.dto.StoreGoods.GoodsStatus;
 import com.qtz.goods.spi.dto.StoreGoods.IsCoupon;
@@ -775,8 +773,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
             extra.put("data", JSONObject.toJSONString(ex));
+            extra.put("message", cm.getMessage());
 	        //发送极光消息
-	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 			jPushMessageService.sendMessage(jpushDto);
             
         } finally {
@@ -852,10 +851,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	        extra.put("code", RespCode.order_receiving);
 	        MsgOutput ex = new MsgOutput();
 	        ex.setId(orderId + "");
+	        extra.put("message", cm.getMessage());
 	        extra.put("data", JSONObject.toJSONString(ex));
-	         
+	        extra.put("message", cm.getMessage());
 	        //发送极光消息
-	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 			jPushMessageService.sendMessage(jpushDto);
 			
                        
@@ -948,10 +948,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             extra.put("code", RespCode.refuse_place_an_order);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
+            extra.put("message", cm.getMessage());
             extra.put("data", JSONObject.toJSONString(ex));
 	         
 	        //发送极光消息
-	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 			jPushMessageService.sendMessage(jpushDto);
             
         } finally {
@@ -1033,10 +1034,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
                     extra.put("code", RespCode.order_cancel);
                     MsgOutput ex = new MsgOutput();
                     ex.setId(orderId + "");
+                    extra.put("message", cm.getMessage());
                     extra.put("data", JSONObject.toJSONString(ex));
                     
                     //发送极光消息
-        	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+        	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
         			jPushMessageService.sendMessage(jpushDto);
                     
                     return;
@@ -1185,9 +1187,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
             extra.put("code", RespCode.apply_for_refund);
             MsgOutput ex = new MsgOutput();
             ex.setId(orderId + "");
+            extra.put("message", cm.getMessage());
             extra.put("data", JSONObject.toJSONString(ex));
 	        //发送极光消息
-	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 			jPushMessageService.sendMessage(jpushDto);
             
             
@@ -1264,8 +1267,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     			}
     	        CustomMsg cm = this.customMsgService.findByCode(RespCode.no_agree_to_refund);
     	        extra.put("code", RespCode.no_agree_to_refund);
+    	        extra.put("message", cm.getMessage());
     	        //发送极光消息
-    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
     			jPushMessageService.sendMessage(jpushDto);
                 
                 
@@ -1308,8 +1312,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     			}
     	        CustomMsg cm = this.customMsgService.findByCode(RespCode.agree_to_refund);
     	        extra.put("code", RespCode.agree_to_refund);
+    	        extra.put("message", cm.getMessage());
     	        //发送极光消息
-    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
     			jPushMessageService.sendMessage(jpushDto);
 
             }
@@ -1508,8 +1513,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     			}
     	        CustomMsg cm = this.customMsgService.findByCode(RespCode.no_agree_to_refund);
     	        extra.put("code", RespCode.no_agree_to_refund);
+    	        extra.put("message", cm.getMessage());
     	        //发送极光消息
-    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
     			jPushMessageService.sendMessage(jpushDto);
    
             } else {
@@ -1548,8 +1554,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
     			}
     	        CustomMsg cm = this.customMsgService.findByCode(RespCode.no_agree_to_refund);
     	        extra.put("code", RespCode.no_agree_to_refund);
+    	        extra.put("message", cm.getMessage());
     	        //发送极光消息
-    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+    	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
     			jPushMessageService.sendMessage(jpushDto);
             }
         } finally {
@@ -1614,8 +1621,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	        MsgOutput ex = new MsgOutput();
 	        ex.setId(orderId + "");
 	        extra.put("data", JSONObject.toJSONString(ex));
+	        extra.put("message", cm.getMessage());
 	        //发送极光消息
-	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+	        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 			jPushMessageService.sendMessage(jpushDto);
             
         } finally {
@@ -1664,8 +1672,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		        MsgOutput ex = new MsgOutput();
 		        ex.setId(orderId + "");
 		        extra.put("data", JSONObject.toJSONString(ex));
+		        extra.put("message", cm.getMessage());
 		        //发送极光消息
-		        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra);
+		        JpushDto jpushDto = new JpushDto(user.getUserType(),user.getPlatForm(),cm.getMessage(),sid,extra,Boolean.valueOf(CfgHelper.getValue("jpush.environment")));
 				jPushMessageService.sendMessage(jpushDto);
 	            
 	        } finally {
